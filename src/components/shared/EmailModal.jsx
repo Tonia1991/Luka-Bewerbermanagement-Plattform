@@ -6,10 +6,13 @@ const VORLAGE_EINLADUNG_TEXT = (vorname, nachname, stelle) => `Hey ${vorname},
 
 danke für deine Bewerbung als ${stelle} bei uns im Biohacking Club – wir haben uns deine Unterlagen genau angeschaut und sind begeistert!
 
-Wir würden dich gerne persönlich kennenlernen und melden uns in den nächsten Tagen bei dir, um einen gemeinsamen Termin zu finden.
+Wir würden dich gerne persönlich kennenlernen und laden dich herzlich zu einem ersten Gespräch ein. Such dir gerne direkt einen passenden Termin aus:
 
-Bis bald,
-Das Team vom Biohacking Club Berlin`;
+https://calcom.antoniabutze.de/calender
+
+Wir freuen uns auf dich!
+
+Dein Team vom Biohacking Club`;
 
 const VORLAGE_ABSAGE_BETREFF = () => `Deine Bewerbung beim Biohacking Club Berlin`;
 const VORLAGE_ABSAGE_TEXT = (vorname, nachname, stelle) => `Hey ${vorname},
