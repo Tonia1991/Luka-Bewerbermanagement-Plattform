@@ -18,7 +18,7 @@ router.post('/', validateEntscheidung, async (req, res) => {
   const { nocodb_id, aktion, email_betreff, email_text } = req.body;
 
   try {
-    const webhookUrl = process.env.NODE_ENV !== 'production' && process.env.N8N_WEBHOOK_ENTSCHEIDUNG_TEST
+    const webhookUrl = process.env.N8N_USE_TEST_WEBHOOK === 'true' && process.env.N8N_WEBHOOK_ENTSCHEIDUNG_TEST
       ? process.env.N8N_WEBHOOK_ENTSCHEIDUNG_TEST
       : process.env.N8N_WEBHOOK_ENTSCHEIDUNG;
 
