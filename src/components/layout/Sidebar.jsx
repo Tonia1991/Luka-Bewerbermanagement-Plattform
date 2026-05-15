@@ -64,11 +64,7 @@ export default function Sidebar({ stats }) {
 
       {/* Navigation */}
       <nav className="flex-1 px-3 py-4 space-y-0.5">
-        <p className="text-xs font-semibold uppercase tracking-widest px-3 mb-3" style={{ color: 'rgba(255,255,255,0.2)', fontSize: 9 }}>
-          Navigation
-        </p>
         <NavItem to="/dashboard" label="Dashboard" end />
-        <NavItem to="/dashboard" label="Alle Bewerbungen" badge={stats?.gesamt} />
       </nav>
 
       {/* Abmelden */}

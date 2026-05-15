@@ -28,18 +28,33 @@ export default function BewerberStammdaten({ bewerber }) {
           <StatusBadge status={bewerber.Status} />
         </div>
 
-        <div className="flex flex-wrap gap-4 text-sm" style={{ color: 'var(--text-sub)' }}>
-          {bewerber.Email && (
-            <a href={`mailto:${bewerber.Email}`} className="transition-colors" style={{ color: 'var(--blue)', textDecoration: 'none' }}>
-              {bewerber.Email}
-            </a>
+        <div className="grid gap-x-6 gap-y-2 text-sm" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))' }}>
+          <div>
+            <p className="text-xs font-semibold mb-0.5" style={{ color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', fontSize: 9 }}>Email</p>
+            {bewerber.Email
+              ? <a href={`mailto:${bewerber.Email}`} style={{ color: 'var(--blue)', textDecoration: 'none' }}>{bewerber.Email}</a>
+              : <span style={{ color: 'var(--text-muted)' }}>–</span>}
+          </div>
+          <div>
+            <p className="text-xs font-semibold mb-0.5" style={{ color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', fontSize: 9 }}>Telefon</p>
+            <span style={{ color: 'var(--text-sub)' }}>{bewerber.Telefon || '–'}</span>
+          </div>
+          <div>
+            <p className="text-xs font-semibold mb-0.5" style={{ color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', fontSize: 9 }}>Gehalt</p>
+            <span style={{ color: 'var(--text-sub)' }}>
+              {bewerber.Gehaltsvorstellung ? `${parseFloat(bewerber.Gehaltsvorstellung).toLocaleString('de-DE')} €/Monat` : '–'}
+            </span>
+          </div>
+          <div>
+            <p className="text-xs font-semibold mb-0.5" style={{ color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', fontSize: 9 }}>Verfügbar ab</p>
+            <span style={{ color: 'var(--text-sub)' }}>{bewerber.Verfuegbarkeit || '–'}</span>
+          </div>
+          {bewerber.Quelle && (
+            <div>
+              <p className="text-xs font-semibold mb-0.5" style={{ color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', fontSize: 9 }}>Quelle</p>
+              <span style={{ color: 'var(--text-sub)' }}>{bewerber.Quelle}</span>
+            </div>
           )}
-          {bewerber.Telefon && <span>{bewerber.Telefon}</span>}
-          {bewerber.Gehaltsvorstellung && (
-            <span>{parseFloat(bewerber.Gehaltsvorstellung).toLocaleString('de-DE')} €/Monat</span>
-          )}
-          {bewerber.Verfuegbarkeit && <span>ab {bewerber.Verfuegbarkeit}</span>}
-          {bewerber.Quelle && <span>{bewerber.Quelle}</span>}
         </div>
       </div>
     </div>
