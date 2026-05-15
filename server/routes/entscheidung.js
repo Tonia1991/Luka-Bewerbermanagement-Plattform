@@ -1,26 +1,8 @@
 import { Router } from 'express';
 import { body, validationResult } from 'express-validator';
 import axios from 'axios';
-import nodemailer from 'nodemailer';
 
 const router = Router();
-const TABLE_ID = process.env.NOCODB_TABLE_ID || 'YOUR_TABLE_ID';
-
-function nocoHeaders() {
-  return { 'xc-token': process.env.NOCODB_API_TOKEN };
-}
-
-function createTransporter() {
-  return nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 587,
-    secure: false,
-    auth: {
-      user: process.env.GMAIL_USER,
-      pass: process.env.GMAIL_APP_PASSWORD,
-    },
-  });
-}
 
 const validateEntscheidung = [
   body('nocodb_id').notEmpty().withMessage('nocodb_id fehlt.'),
@@ -34,38 +16,17 @@ router.post('/', validateEntscheidung, async (req, res) => {
   if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
 
   const { nocodb_id, aktion, email_betreff, email_text } = req.body;
-  const neuerStatus = aktion === 'einladen' ? 'eingeladen' : 'abgesagt';
 
   try {
-    // Bewerber laden (für Email-Adresse)
-    const recordRes = await axios.get(
-      `${process.env.NOCODB_API_URL}/api/v2/tables/${TABLE_ID}/records/${nocodb_id}`,
-      { headers: nocoHeaders() }
+    const webhookResponse = await axios.post(
+      process.env.N8N_WEBHOOK_ENTSCHEIDUNG,
+      { nocodb_id, aktion, email_betreff, email_text },
+      { timeout: 30000 }
     );
-    const bewerber = recordRes.data;
-
-    // Status in NocoDB aktualisieren
-    await axios.patch(
-      `${process.env.NOCODB_API_URL}/api/v2/tables/${TABLE_ID}/records`,
-      { Id: parseInt(nocodb_id), Status: neuerStatus },
-      { headers: nocoHeaders() }
-    );
-
-    // Email senden
-    if (bewerber.Email && email_text && process.env.GMAIL_USER && process.env.GMAIL_APP_PASSWORD) {
-      const transporter = createTransporter();
-      await transporter.sendMail({
-        from: `"Biohacking Club Recruiting" <${process.env.GMAIL_USER}>`,
-        to: bewerber.Email,
-        subject: email_betreff || 'Ihre Bewerbung beim Biohacking Club',
-        text: email_text,
-      });
-    }
-
-    res.json({ success: true });
+    res.json({ success: true, data: webhookResponse.data });
   } catch (err) {
-    console.error('Entscheidung Fehler:', err.message);
-    res.status(500).json({ error: 'Fehler beim Verarbeiten der Entscheidung.', detail: err.message });
+    console.error('Entscheidung Webhook Fehler:', err.message);
+    res.status(500).json({ error: 'Fehler beim Senden der Entscheidung.', detail: err.message });
   }
 });
 
@@ -80,28 +41,11 @@ router.post('/massen', async (req, res) => {
 
   for (const id of nocodb_ids) {
     try {
-      await axios.patch(
-        `${process.env.NOCODB_API_URL}/api/v2/tables/${TABLE_ID}/records`,
-        { Id: parseInt(id), Status: 'abgesagt' },
-        { headers: nocoHeaders() }
+      await axios.post(
+        process.env.N8N_WEBHOOK_ENTSCHEIDUNG,
+        { nocodb_id: id, aktion: 'absagen', email_betreff, email_text },
+        { timeout: 30000 }
       );
-
-      if (email_text && process.env.GMAIL_USER && process.env.GMAIL_APP_PASSWORD) {
-        const recordRes = await axios.get(
-          `${process.env.NOCODB_API_URL}/api/v2/tables/${TABLE_ID}/records/${id}`,
-          { headers: nocoHeaders() }
-        );
-        if (recordRes.data.Email) {
-          const transporter = createTransporter();
-          await transporter.sendMail({
-            from: `"Biohacking Club Recruiting" <${process.env.GMAIL_USER}>`,
-            to: recordRes.data.Email,
-            subject: email_betreff || 'Ihre Bewerbung beim Biohacking Club',
-            text: email_text,
-          });
-        }
-      }
-
       ergebnisse.push({ id, success: true });
     } catch (err) {
       fehler.push({ id, error: err.message });
