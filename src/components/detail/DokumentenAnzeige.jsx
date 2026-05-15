@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-const DOKUMENTE_NAMEN = [
+const DOKUMENTE = [
   { key: 'lebenslauf', name: 'Lebenslauf.pdf', datei: 'Lebenslauf.pdf' },
   { key: 'unterlagen', name: 'Weitere Unterlagen.pdf', datei: 'WeitereUnterlagen.pdf' },
   { key: 'ki_bericht', name: 'KI Screening Bericht.pdf', datei: 'KI_Screening_Bericht.pdf' },
@@ -8,7 +8,6 @@ const DOKUMENTE_NAMEN = [
 
 export default function DokumentenAnzeige({ bewerber }) {
   const [aktivePDF, setAktivePDF] = useState(null);
-
   const nextcloudOrdner = bewerber.Nextcloud_Ordner || bewerber.NextcloudOrdner || '';
   const nextcloudBase = bewerber.Nextcloud_Base || '';
 
@@ -19,44 +18,42 @@ export default function DokumentenAnzeige({ bewerber }) {
 
   function nextcloudLink() {
     if (!nextcloudOrdner) return '#';
-    return `${nextcloudBase || ''}/index.php/apps/files/?dir=${encodeURIComponent('/' + nextcloudOrdner)}`;
+    return `${nextcloudBase}/index.php/apps/files/?dir=${encodeURIComponent('/' + nextcloudOrdner)}`;
   }
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-5 space-y-3">
-      <h2 className="text-sm font-semibold text-text-dark">📄 Bewerbungsunterlagen</h2>
+    <div className="card-light p-5 space-y-3">
+      <span className="tag-blue">Bewerbungsunterlagen</span>
 
       {!nextcloudOrdner ? (
-        <p className="text-sm text-gray-400">Kein Nextcloud-Ordner verknüpft.</p>
+        <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Kein Nextcloud-Ordner verknüpft.</p>
       ) : (
         <>
-          <div className="space-y-2">
-            {DOKUMENTE_NAMEN.map(dok => (
+          <div className="space-y-1.5">
+            {DOKUMENTE.map(dok => (
               <div
                 key={dok.key}
-                className={`flex items-center justify-between gap-2 p-2.5 border rounded-lg transition-colors ${
-                  aktivePDF === dok.datei ? 'border-primary bg-primary/5' : 'border-gray-200 hover:bg-gray-50'
-                }`}
+                className="flex items-center justify-between gap-2 px-3 py-2 rounded transition-all"
+                style={{
+                  border: `1px solid ${aktivePDF === dok.datei ? 'rgba(74,140,200,0.3)' : 'var(--border-l)'}`,
+                  background: aktivePDF === dok.datei ? 'rgba(74,140,200,0.04)' : 'var(--light)',
+                }}
               >
-                <span className="text-sm text-text-dark flex items-center gap-2">
-                  📋 {dok.name}
-                </span>
-                <div className="flex items-center gap-1">
+                <span className="text-sm" style={{ color: 'var(--text-d)' }}>{dok.name}</span>
+                <div className="flex items-center gap-2">
                   <button
                     onClick={() => setAktivePDF(aktivePDF === dok.datei ? null : dok.datei)}
-                    className="text-lg hover:scale-110 transition-transform"
-                    title="Anzeigen"
+                    className="text-xs font-medium transition-colors"
+                    style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--blue)' }}
                   >
-                    👁
+                    {aktivePDF === dok.datei ? 'Schließen' : 'Anzeigen'}
                   </button>
                   <a
-                    href={nextcloudLink()}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-lg hover:scale-110 transition-transform"
-                    title="In Nextcloud öffnen"
+                    href={nextcloudLink()} target="_blank" rel="noopener noreferrer"
+                    className="text-xs font-medium"
+                    style={{ color: 'var(--text-muted)', textDecoration: 'none' }}
                   >
-                    🔗
+                    Nextcloud
                   </a>
                 </div>
               </div>
@@ -65,24 +62,21 @@ export default function DokumentenAnzeige({ bewerber }) {
 
           {aktivePDF && (
             <div className="space-y-2">
-              <p className="text-xs text-text-muted">Dokument anzeigen:</p>
+              <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Dokument anzeigen:</p>
               <iframe
-                src={pdfUrl(aktivePDF)}
-                width="100%"
-                height="600"
-                className="border border-gray-200 rounded-lg"
+                src={pdfUrl(aktivePDF)} width="100%" height="600"
+                style={{ border: '1px solid var(--border-l)', borderRadius: 6 }}
                 title="Dokument"
               />
             </div>
           )}
 
           <a
-            href={nextcloudLink()}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 text-sm text-primary hover:underline"
+            href={nextcloudLink()} target="_blank" rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 text-sm font-medium"
+            style={{ color: 'var(--blue)', textDecoration: 'none' }}
           >
-            📂 In Nextcloud öffnen
+            In Nextcloud öffnen
           </a>
         </>
       )}

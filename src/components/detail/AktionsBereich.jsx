@@ -3,77 +3,74 @@ import axios from 'axios';
 import EmailModal from '../shared/EmailModal.jsx';
 
 export default function AktionsBereich({ bewerber, onAktualisieren }) {
-  const [emailModal, setEmailModal] = useState(null); // null | 'einladen' | 'absagen'
+  const [emailModal, setEmailModal] = useState(null);
   const [statusLoading, setStatusLoading] = useState(false);
   const [fehler, setFehler] = useState(null);
 
   async function handleStatusAendern(neuerStatus) {
-    setStatusLoading(true);
-    setFehler(null);
+    setStatusLoading(true); setFehler(null);
     try {
       await axios.patch(`/api/notizen/${bewerber.Id}/status`, { status: neuerStatus });
       onAktualisieren();
-    } catch {
-      setFehler('Fehler beim Ändern des Status.');
-    } finally {
-      setStatusLoading(false);
-    }
+    } catch { setFehler('Fehler beim Ändern des Status.'); }
+    finally { setStatusLoading(false); }
   }
 
   async function handleEntscheidung({ betreff, text }) {
-    const aktion = emailModal;
     await axios.post('/api/entscheidung', {
-      nocodb_id: bewerber.Id,
-      aktion,
-      email_betreff: betreff,
-      email_text: text,
+      nocodb_id: bewerber.Id, aktion: emailModal,
+      email_betreff: betreff, email_text: text,
     });
     onAktualisieren();
   }
 
   return (
     <>
-      <div className="bg-white rounded-xl border border-gray-200 p-5 space-y-4 sticky top-4">
-        <h2 className="text-sm font-semibold text-text-dark">Entscheidung treffen:</h2>
+      <div className="card-light p-5 space-y-4 sticky top-4">
+        <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--text-muted)', letterSpacing: '0.08em' }}>Entscheidung treffen</p>
 
-        <div className="flex gap-3">
+        <div className="flex gap-2">
           <button
             onClick={() => setEmailModal('einladen')}
             disabled={bewerber.Status === 'Eingeladen'}
-            className="flex-1 flex items-center justify-center gap-1.5 px-4 py-2.5 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            className="flex-1 flex items-center justify-center gap-1.5 text-sm font-semibold transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+            style={{ background: 'rgba(22,163,74,0.08)', color: '#16a34a', border: '1px solid rgba(22,163,74,0.2)', borderRadius: 6, padding: '9px 0', cursor: 'pointer' }}
+            onMouseEnter={e => { if (bewerber.Status !== 'Eingeladen') { e.currentTarget.style.background = 'rgba(22,163,74,0.15)'; } }}
+            onMouseLeave={e => { e.currentTarget.style.background = 'rgba(22,163,74,0.08)'; }}
           >
-            ✅ Einladen
+            Einladen
           </button>
           <button
             onClick={() => setEmailModal('absagen')}
             disabled={bewerber.Status === 'Abgesagt'}
-            className="flex-1 flex items-center justify-center gap-1.5 px-4 py-2.5 bg-red-600 text-white text-sm font-medium rounded-lg hover:bg-red-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            className="flex-1 flex items-center justify-center gap-1.5 text-sm font-semibold transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+            style={{ background: 'rgba(220,38,38,0.06)', color: '#dc2626', border: '1px solid rgba(220,38,38,0.18)', borderRadius: 6, padding: '9px 0', cursor: 'pointer' }}
+            onMouseEnter={e => { if (bewerber.Status !== 'Abgesagt') { e.currentTarget.style.background = 'rgba(220,38,38,0.12)'; } }}
+            onMouseLeave={e => { e.currentTarget.style.background = 'rgba(220,38,38,0.06)'; }}
           >
-            ❌ Absagen
+            Absagen
           </button>
         </div>
 
-        <div className="border-t pt-3 space-y-2">
-          <p className="text-xs text-text-muted font-medium">Status ändern:</p>
+        <div style={{ borderTop: '1px solid var(--border-l)', paddingTop: 12 }} className="space-y-2">
+          <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Status ändern</p>
           <button
             onClick={() => handleStatusAendern('In Bearbeitung')}
             disabled={statusLoading || bewerber.Status === 'In Bearbeitung'}
-            className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg hover:border-primary hover:text-primary disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            className="w-full text-sm font-medium transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+            style={{ background: 'var(--light)', border: '1px solid var(--border-l)', borderRadius: 6, padding: '8px 0', cursor: 'pointer', color: 'var(--text-sub)' }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(74,140,200,0.35)'; e.currentTarget.style.color = 'var(--blue)'; }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border-l)'; e.currentTarget.style.color = 'var(--text-sub)'; }}
           >
-            ⏳ In Bearbeitung setzen
+            In Bearbeitung setzen
           </button>
         </div>
 
-        {fehler && <p className="text-xs text-red-500">{fehler}</p>}
+        {fehler && <p className="text-xs" style={{ color: '#dc2626' }}>{fehler}</p>}
       </div>
 
       {emailModal && (
-        <EmailModal
-          bewerber={bewerber}
-          aktion={emailModal}
-          onClose={() => setEmailModal(null)}
-          onSend={handleEntscheidung}
-        />
+        <EmailModal bewerber={bewerber} aktion={emailModal} onClose={() => setEmailModal(null)} onSend={handleEntscheidung} />
       )}
     </>
   );

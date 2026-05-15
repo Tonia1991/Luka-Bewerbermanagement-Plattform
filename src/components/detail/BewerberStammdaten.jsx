@@ -14,51 +14,45 @@ export default function BewerberStammdaten({ bewerber }) {
   return (
     <div className="space-y-3">
       {/* Breadcrumb */}
-      <nav className="text-sm text-text-muted flex items-center gap-2">
-        <button onClick={() => navigate('/dashboard')} className="hover:text-primary">Dashboard</button>
+      <nav className="flex items-center gap-2 text-xs" style={{ color: 'var(--text-muted)' }}>
+        <button onClick={() => navigate('/dashboard')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--blue)', fontSize: 12 }}>
+          Dashboard
+        </button>
         <span>›</span>
         <span>{bewerber.Stelle}</span>
         <span>›</span>
-        <span className="text-text-dark font-medium">{bewerber.Name}</span>
+        <span style={{ color: 'var(--text-d)', fontWeight: 600 }}>{bewerber.Name}</span>
       </nav>
 
       {/* Warn-Box */}
       {istWarnend && (
-        <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-sm text-red-700 flex items-center gap-2">
-          ⚠️ Diese Bewerbung wartet seit <strong>{alter} Tagen</strong> auf eine Entscheidung.
+        <div className="flex items-center gap-2 px-4 py-3 rounded text-sm" style={{ background: 'rgba(239,68,68,0.05)', border: '1px solid rgba(239,68,68,0.18)', color: '#dc2626' }}>
+          Diese Bewerbung wartet seit <strong>{alter} Tagen</strong> auf eine Entscheidung.
         </div>
       )}
 
-      {/* Header */}
-      <div className="bg-white rounded-xl border border-gray-200 p-5 space-y-3">
+      {/* Header Card */}
+      <div className="card-light p-5 space-y-4">
         <div className="flex items-start justify-between gap-4">
           <div>
-            <h1 className="text-xl font-bold text-text-dark">{bewerber.Name}</h1>
-            <p className="text-sm text-text-muted">{bewerber.Stelle}</p>
+            <h1 className="text-lg font-bold" style={{ color: 'var(--text-d)', letterSpacing: '-0.02em' }}>{bewerber.Name}</h1>
+            <p className="text-sm mt-0.5" style={{ color: 'var(--text-muted)' }}>{bewerber.Stelle}</p>
           </div>
           <StatusBadge status={bewerber.Status} />
         </div>
 
-        <div className="flex flex-wrap gap-4 text-sm text-text-muted">
+        <div className="flex flex-wrap gap-4 text-sm" style={{ color: 'var(--text-sub)' }}>
           {bewerber.Email && (
-            <a href={`mailto:${bewerber.Email}`} className="flex items-center gap-1 hover:text-primary">
-              📧 {bewerber.Email}
+            <a href={`mailto:${bewerber.Email}`} className="transition-colors" style={{ color: 'var(--blue)', textDecoration: 'none' }}>
+              {bewerber.Email}
             </a>
           )}
-          {bewerber.Telefon && (
-            <span className="flex items-center gap-1">📞 {bewerber.Telefon}</span>
-          )}
+          {bewerber.Telefon && <span>{bewerber.Telefon}</span>}
           {bewerber.Gehaltsvorstellung && (
-            <span className="flex items-center gap-1">
-              💰 {parseFloat(bewerber.Gehaltsvorstellung).toLocaleString('de-DE')} €/Monat
-            </span>
+            <span>{parseFloat(bewerber.Gehaltsvorstellung).toLocaleString('de-DE')} €/Monat</span>
           )}
-          {bewerber.Verfuegbarkeit && (
-            <span className="flex items-center gap-1">📅 ab {bewerber.Verfuegbarkeit}</span>
-          )}
-          {bewerber.Quelle && (
-            <span className="flex items-center gap-1">📍 {bewerber.Quelle}</span>
-          )}
+          {bewerber.Verfuegbarkeit && <span>ab {bewerber.Verfuegbarkeit}</span>}
+          {bewerber.Quelle && <span>{bewerber.Quelle}</span>}
         </div>
       </div>
     </div>

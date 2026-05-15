@@ -1,11 +1,11 @@
 import KINoteBadge from '../shared/KINoteBadge.jsx';
 
-function Abschnitt({ icon, label, text }) {
+function Abschnitt({ label, text }) {
   if (!text) return null;
   return (
-    <div>
-      <p className="text-xs font-semibold text-gray-500 mb-1">{icon} {label}:</p>
-      <p className="text-sm text-text-dark">{text}</p>
+    <div className="pt-3" style={{ borderTop: '1px solid var(--border-l)' }}>
+      <p className="text-xs font-semibold mb-1.5 uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>{label}</p>
+      <p className="text-sm leading-relaxed" style={{ color: 'var(--text-d)' }}>{text}</p>
     </div>
   );
 }
@@ -14,35 +14,33 @@ export default function KIBewertung({ bewerber }) {
   const hatScreening = bewerber.KI_Note || bewerber.KI_Zusammenfassung;
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-5 space-y-4">
-      <h2 className="text-sm font-semibold text-text-dark flex items-center gap-2">
-        🤖 KI-Screening Ergebnis
-      </h2>
+    <div className="card-light p-5 space-y-4">
+      <div className="flex items-center gap-2">
+        <span className="tag-blue">KI-Screening</span>
+      </div>
 
       {!hatScreening ? (
-        <p className="text-sm text-gray-400">Noch kein KI-Screening vorhanden.</p>
+        <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Noch kein KI-Screening vorhanden.</p>
       ) : (
         <>
-          <div className="flex items-center gap-3">
-            <KINoteBadge note={bewerber.KI_Note} size="lg" />
-          </div>
+          <KINoteBadge note={bewerber.KI_Note} size="lg" />
 
-          <div className="space-y-3 divide-y divide-gray-100 pt-2">
-            <Abschnitt icon="✅" label="Stärken" text={bewerber.KI_Staerken} />
-            {bewerber.KI_Schwaechen && <div className="pt-3"><Abschnitt icon="⚠️" label="Schwächen" text={bewerber.KI_Schwaechen} /></div>}
-            {bewerber.KI_Fehlende_Qualifikationen && <div className="pt-3"><Abschnitt icon="❓" label="Fehlende Qualifikationen" text={bewerber.KI_Fehlende_Qualifikationen} /></div>}
-            {bewerber.KI_Risiken && <div className="pt-3"><Abschnitt icon="🔍" label="Risiken" text={bewerber.KI_Risiken} /></div>}
-            {bewerber.KI_Zusammenfassung && <div className="pt-3"><Abschnitt icon="📋" label="Zusammenfassung" text={bewerber.KI_Zusammenfassung} /></div>}
+          <div className="space-y-0">
+            <Abschnitt label="Stärken" text={bewerber.KI_Staerken} />
+            <Abschnitt label="Schwächen" text={bewerber.KI_Schwaechen} />
+            <Abschnitt label="Fehlende Qualifikationen" text={bewerber.KI_Fehlende_Qualifikationen} />
+            <Abschnitt label="Risiken" text={bewerber.KI_Risiken} />
+            <Abschnitt label="Zusammenfassung" text={bewerber.KI_Zusammenfassung} />
           </div>
 
           {bewerber.KI_Empfehlung && (
-            <div className="bg-blue-50 rounded-lg px-3 py-2 text-sm text-blue-700 font-medium">
-              💡 KI-Empfehlung: {bewerber.KI_Empfehlung}
+            <div className="rounded px-3 py-2.5 text-sm font-medium" style={{ background: 'rgba(74,140,200,0.06)', color: 'var(--blue)', border: '1px solid rgba(74,140,200,0.18)' }}>
+              KI-Empfehlung: {bewerber.KI_Empfehlung}
             </div>
           )}
 
-          <p className="text-xs text-gray-400 italic border-t pt-3">
-            ⚠️ Diese Bewertung wurde durch KI erstellt. Die Entscheidung liegt beim Menschen. (EU AI Act)
+          <p className="text-xs italic" style={{ color: 'var(--text-muted)', borderTop: '1px solid var(--border-l)', paddingTop: 12 }}>
+            Diese Bewertung wurde durch KI erstellt. Die Entscheidung liegt beim Menschen. (EU AI Act)
           </p>
         </>
       )}

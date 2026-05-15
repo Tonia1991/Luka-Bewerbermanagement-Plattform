@@ -19,58 +19,52 @@ export default function BewerbungDetail() {
   useEffect(() => { ladeBewerbung(); }, [id]);
 
   async function ladeBewerbung() {
-    setLoading(true);
-    setFehler(null);
+    setLoading(true); setFehler(null);
     try {
       const res = await axios.get(`/api/bewerbungen/${id}`);
       setBewerber(res.data);
-    } catch {
-      setFehler('Bewerbung konnte nicht geladen werden.');
-    } finally {
-      setLoading(false);
-    }
+    } catch { setFehler('Bewerbung konnte nicht geladen werden.'); }
+    finally { setLoading(false); }
   }
 
-  if (loading) {
-    return (
-      <div className="flex min-h-screen bg-bg-light">
-        <Sidebar stats={null} />
-        <div className="flex-1 flex items-center justify-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-        </div>
+  const ladeScreen = (
+    <div className="flex min-h-screen" style={{ background: 'var(--light)' }}>
+      <Sidebar stats={null} />
+      <div className="flex-1 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-7 w-7 border-b-2" style={{ borderColor: 'var(--blue)' }}></div>
       </div>
-    );
-  }
+    </div>
+  );
 
-  if (fehler || !bewerber) {
-    return (
-      <div className="flex min-h-screen bg-bg-light">
-        <Sidebar stats={null} />
-        <div className="flex-1 flex items-center justify-center">
-          <p className="text-red-500">{fehler || 'Bewerbung nicht gefunden.'}</p>
-        </div>
+  if (loading) return ladeScreen;
+
+  if (fehler || !bewerber) return (
+    <div className="flex min-h-screen" style={{ background: 'var(--light)' }}>
+      <Sidebar stats={null} />
+      <div className="flex-1 flex items-center justify-center">
+        <p className="text-sm" style={{ color: '#dc2626' }}>{fehler || 'Bewerbung nicht gefunden.'}</p>
       </div>
-    );
-  }
+    </div>
+  );
 
   return (
-    <div className="flex min-h-screen bg-bg-light">
+    <div className="flex min-h-screen" style={{ background: 'var(--light)' }}>
       <Sidebar stats={null} />
 
       <div className="flex-1 flex flex-col overflow-hidden">
-        <TopBar titel={`👤 ${bewerber.Name}`} />
+        <TopBar titel={bewerber.Name} />
 
         <main className="flex-1 overflow-auto p-6">
-          <div className="grid grid-cols-[1fr_400px] gap-6 max-w-7xl">
-            {/* Linke Spalte (60%) */}
-            <div className="space-y-4">
+          <div className="grid gap-5 max-w-7xl" style={{ gridTemplateColumns: '1fr 360px' }}>
+            {/* Linke Spalte */}
+            <div className="space-y-4 min-w-0">
               <BewerberStammdaten bewerber={bewerber} />
               <KIBewertung bewerber={bewerber} />
               <NotizenFeld bewerber={bewerber} onNotizGespeichert={ladeBewerbung} />
               <EmailVerlauf bewerber={bewerber} />
             </div>
 
-            {/* Rechte Spalte (40%) */}
+            {/* Rechte Spalte */}
             <div className="space-y-4">
               <DokumentenAnzeige bewerber={bewerber} />
               <AktionsBereich bewerber={bewerber} onAktualisieren={ladeBewerbung} />

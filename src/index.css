@@ -2,24 +2,88 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  background-color: #f5f8d4;
-  color: #1a1a2e;
-  font-family: 'Inter', system-ui, sans-serif;
+/* ─── Design Tokens (Andi Biohacking Club) ─── */
+:root {
+  --dark:       #0F1E3A;
+  --dark-card:  #1A3050;
+  --dark-nav:   #3A5070;
+  --light:      #F4F6F9;
+  --light-card: #FFFFFF;
+  --border-l:   #DDE4EE;
+  --text-d:     #0F1E3A;
+  --text-sub:   #3A5070;
+  --text-muted: #6A8090;
+  --blue:       #4A8CC8;
+  --blue-light: #5a9cd8;
+  --gold:       #B8962A;
 }
 
-/* Scrollbar Styling */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+body {
+  background-color: var(--light);
+  color: var(--text-d);
+  font-family: 'Inter', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
-::-webkit-scrollbar-track {
-  background: #f1f1f1;
+
+/* ─── Scrollbar ─── */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: var(--light); }
+::-webkit-scrollbar-thumb { background: rgba(74,140,200,0.3); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(74,140,200,0.5); }
+
+/* ─── Keyframes ─── */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
-::-webkit-scrollbar-thumb {
-  background: #c5c5c5;
-  border-radius: 3px;
+@keyframes pulse-dot {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(74,140,200,0.4); }
+  50%       { box-shadow: 0 0 0 6px rgba(74,140,200,0); }
 }
-::-webkit-scrollbar-thumb:hover {
-  background: #a0a0a0;
+
+/* ─── Animation utilities ─── */
+.anim-fade-up { animation: fade-up 0.4s ease both; }
+
+/* ─── Cards ─── */
+.card-light {
+  background: var(--light-card);
+  border: 1px solid var(--border-l);
+  border-radius: 8px;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.card-light:hover {
+  box-shadow: 0 4px 16px rgba(15,30,58,0.08);
+  border-color: rgba(74,140,200,0.2);
+}
+
+/* ─── Live dot ─── */
+.live-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--blue);
+  animation: pulse-dot 2s ease-in-out infinite;
+  display: inline-block;
+}
+
+/* ─── Tag ─── */
+.tag-blue {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 3px 10px; border-radius: 4px;
+  font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+  border: 1px solid rgba(74,140,200,0.25);
+  color: var(--blue); background: rgba(74,140,200,0.07);
+}
+.tag-gold {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 3px 10px; border-radius: 4px;
+  font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+  border: 1px solid rgba(184,150,42,0.25);
+  color: var(--gold); background: rgba(184,150,42,0.07);
+}
+
+/* ─── Nav active ─── */
+.nav-active {
+  background: rgba(74,140,200,0.1) !important;
+  border-left: 3px solid var(--blue) !important;
+  color: var(--blue) !important;
+  padding-left: calc(0.75rem - 3px) !important;
 }

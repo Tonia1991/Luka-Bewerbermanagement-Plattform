@@ -1,9 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const VORLAGE_EINLADUNG_BETREFF = (stelle) =>
-  `Einladung zum Vorstellungsgespräch – Biohacking Club`;
-
+const VORLAGE_EINLADUNG_BETREFF = () => `Einladung zum Vorstellungsgespräch – Biohacking Club`;
 const VORLAGE_EINLADUNG_TEXT = (vorname, nachname, stelle) => `Sehr geehrte/r ${vorname} ${nachname},
 
 vielen Dank für Ihre Bewerbung als ${stelle} bei uns im Biohacking Club.
@@ -12,11 +10,9 @@ Wir freuen uns, Sie zu einem persönlichen Vorstellungsgespräch einzuladen.
 Wir werden uns in Kürze mit Ihnen in Verbindung setzen, um einen Termin zu vereinbaren.
 
 Mit freundlichen Grüßen,
-Das Team des Biohacking Club
-🌿 Biohacking Club`;
+Das Team des Biohacking Club`;
 
 const VORLAGE_ABSAGE_BETREFF = () => `Ihre Bewerbung beim Biohacking Club`;
-
 const VORLAGE_ABSAGE_TEXT = (vorname, nachname, stelle) => `Sehr geehrte/r ${vorname} ${nachname},
 
 vielen Dank für Ihr Interesse an der Stelle als ${stelle} bei uns im Biohacking Club und die Zeit, die Sie in Ihre Bewerbung investiert haben.
@@ -31,6 +27,19 @@ Das Team des Biohacking Club
 ---
 Datenschutzhinweis: Ihre Bewerbungsunterlagen werden gemäß DSGVO innerhalb von 30 Tagen nach dieser Mitteilung vollständig gelöscht.`;
 
+const tabStyle = (aktiv) => ({
+  padding: '5px 12px', borderRadius: 4, fontSize: 13, fontWeight: 500,
+  border: 'none', cursor: 'pointer', transition: 'all 0.15s',
+  background: aktiv ? 'var(--dark)' : 'transparent',
+  color: aktiv ? '#fff' : 'var(--text-muted)',
+});
+
+const inputStyle = {
+  width: '100%', background: 'var(--light)', border: '1px solid var(--border-l)',
+  borderRadius: 6, color: 'var(--text-d)', padding: '10px 12px', fontSize: 13,
+  outline: 'none', transition: 'border-color 0.2s',
+};
+
 export default function EmailModal({ bewerber, aktion, onClose, onSend }) {
   const [tab, setTab] = useState('ki');
   const [betreff, setBetreff] = useState('');
@@ -43,143 +52,98 @@ export default function EmailModal({ bewerber, aktion, onClose, onSend }) {
   const nachname = bewerber?.Nachname || bewerber?.Name?.split(' ').slice(1).join(' ') || '';
   const stelle = bewerber?.Stelle || '';
 
-  useEffect(() => {
-    ladeKIVorschlag();
-  }, []);
+  useEffect(() => { ladeKIVorschlag(); }, []);
 
   useEffect(() => {
-    if (tab === 'einladung') {
-      setBetreff(VORLAGE_EINLADUNG_BETREFF(stelle));
-      setText(VORLAGE_EINLADUNG_TEXT(vorname, nachname, stelle));
-    } else if (tab === 'absage') {
-      setBetreff(VORLAGE_ABSAGE_BETREFF());
-      setText(VORLAGE_ABSAGE_TEXT(vorname, nachname, stelle));
-    }
+    if (tab === 'einladung') { setBetreff(VORLAGE_EINLADUNG_BETREFF()); setText(VORLAGE_EINLADUNG_TEXT(vorname, nachname, stelle)); }
+    else if (tab === 'absage') { setBetreff(VORLAGE_ABSAGE_BETREFF()); setText(VORLAGE_ABSAGE_TEXT(vorname, nachname, stelle)); }
   }, [tab]);
 
   async function ladeKIVorschlag() {
-    setKiLoading(true);
-    setKiError(null);
+    setKiLoading(true); setKiError(null);
     try {
       const res = await axios.post('/api/email-vorschlag', {
-        aktion,
-        vorname,
-        nachname,
-        stelle,
+        aktion, vorname, nachname, stelle,
         ki_zusammenfassung: bewerber?.KI_Zusammenfassung || '',
         ki_staerken: bewerber?.KI_Staerken || '',
         ki_schwaechen: bewerber?.KI_Schwaechen || '',
       });
-      setBetreff(res.data.betreff);
-      setText(res.data.text);
+      setBetreff(res.data.betreff); setText(res.data.text);
     } catch {
-      setKiError('KI-Vorschlag konnte nicht geladen werden.');
+      setKiError('KI-Vorschlag nicht verfügbar.');
       setTab('einladung');
-      setBetreff(aktion === 'einladen' ? VORLAGE_EINLADUNG_BETREFF(stelle) : VORLAGE_ABSAGE_BETREFF());
-      setText(aktion === 'einladen'
-        ? VORLAGE_EINLADUNG_TEXT(vorname, nachname, stelle)
-        : VORLAGE_ABSAGE_TEXT(vorname, nachname, stelle));
-    } finally {
-      setKiLoading(false);
-    }
+      setBetreff(aktion === 'einladen' ? VORLAGE_EINLADUNG_BETREFF() : VORLAGE_ABSAGE_BETREFF());
+      setText(aktion === 'einladen' ? VORLAGE_EINLADUNG_TEXT(vorname, nachname, stelle) : VORLAGE_ABSAGE_TEXT(vorname, nachname, stelle));
+    } finally { setKiLoading(false); }
   }
 
   async function handleSenden() {
     setSending(true);
-    try {
-      await onSend({ betreff, text });
-      onClose();
-    } finally {
-      setSending(false);
-    }
+    try { await onSend({ betreff, text }); onClose(); }
+    finally { setSending(false); }
   }
 
   const name = bewerber?.Name || `${vorname} ${nachname}`;
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl">
+    <div className="fixed inset-0 flex items-center justify-center z-50 p-4" style={{ background: 'rgba(15,30,58,0.45)' }}>
+      <div style={{ background: 'var(--light-card)', borderRadius: 10, width: '100%', maxWidth: 640, boxShadow: '0 16px 48px rgba(15,30,58,0.18)' }}>
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b">
-          <h2 className="text-lg font-semibold text-text-dark">
-            Email an {name} senden
-          </h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 text-2xl leading-none">×</button>
+        <div className="flex items-center justify-between px-6 py-4" style={{ borderBottom: '1px solid var(--border-l)' }}>
+          <h2 className="font-semibold text-sm" style={{ color: 'var(--text-d)' }}>Email an {name} senden</h2>
+          <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 18, color: 'var(--text-muted)', lineHeight: 1, padding: '2px 6px' }}>×</button>
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-1 px-6 py-3 border-b bg-gray-50">
-          {[
-            { key: 'ki', label: '🤖 KI-Vorschlag' },
-            { key: 'einladung', label: '📋 Einladung' },
-            { key: 'absage', label: '📋 Absage' },
-          ].map(t => (
-            <button
-              key={t.key}
-              onClick={() => setTab(t.key)}
-              className={`px-3 py-1.5 rounded text-sm font-medium transition-colors ${
-                tab === t.key
-                  ? 'bg-primary text-white'
-                  : 'text-gray-600 hover:bg-gray-200'
-              }`}
-            >
-              {t.label}
-            </button>
+        <div className="flex gap-1 px-6 py-3" style={{ borderBottom: '1px solid var(--border-l)', background: 'var(--light)' }}>
+          {[{ key: 'ki', label: 'KI-Vorschlag' }, { key: 'einladung', label: 'Einladung' }, { key: 'absage', label: 'Absage' }].map(t => (
+            <button key={t.key} onClick={() => setTab(t.key)} style={tabStyle(tab === t.key)}>{t.label}</button>
           ))}
         </div>
 
-        <div className="px-6 py-4 space-y-4">
+        <div className="px-6 py-4 space-y-3">
           {tab === 'ki' && kiLoading && (
-            <div className="flex items-center gap-2 text-sm text-gray-500 py-4">
-              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
-              🤖 KI-Vorschlag wird geladen...
+            <div className="flex items-center gap-2 text-sm py-2" style={{ color: 'var(--text-muted)' }}>
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 flex-shrink-0" style={{ borderColor: 'var(--blue)' }}></div>
+              KI-Vorschlag wird generiert...
             </div>
           )}
-          {kiError && tab === 'ki' && (
-            <p className="text-sm text-red-500">{kiError}</p>
-          )}
+          {kiError && <p className="text-xs" style={{ color: '#dc2626' }}>{kiError}</p>}
 
-          {/* Betreff */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Betreff:</label>
+            <label className="block text-xs font-semibold mb-1.5" style={{ color: 'var(--text-sub)' }}>Betreff</label>
             <input
-              type="text"
-              value={betreff}
-              onChange={e => setBetreff(e.target.value)}
-              className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
+              type="text" value={betreff} onChange={e => setBetreff(e.target.value)} style={inputStyle}
+              onFocus={e => e.target.style.borderColor = 'rgba(74,140,200,0.5)'}
+              onBlur={e => e.target.style.borderColor = 'var(--border-l)'}
             />
           </div>
 
-          {/* Email Text */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Email-Text:</label>
+            <label className="block text-xs font-semibold mb-1.5" style={{ color: 'var(--text-sub)' }}>Email-Text</label>
             <textarea
-              value={text}
-              onChange={e => setText(e.target.value)}
-              rows={12}
-              className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none font-mono"
+              value={text} onChange={e => setText(e.target.value)} rows={11}
+              style={{ ...inputStyle, resize: 'none', fontFamily: 'monospace', fontSize: 12 }}
+              onFocus={e => e.target.style.borderColor = 'rgba(74,140,200,0.5)'}
+              onBlur={e => e.target.style.borderColor = 'var(--border-l)'}
             />
           </div>
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-between px-6 py-4 border-t bg-gray-50 rounded-b-xl">
-          <button
-            onClick={onClose}
-            className="px-4 py-2 text-sm text-gray-600 hover:text-gray-800"
-          >
+        <div className="flex items-center justify-between px-6 py-4" style={{ borderTop: '1px solid var(--border-l)', background: 'var(--light)', borderRadius: '0 0 10px 10px' }}>
+          <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 13, color: 'var(--text-muted)' }}>
             Abbrechen
           </button>
           <button
             onClick={handleSenden}
             disabled={sending || !betreff || !text}
-            className="flex items-center gap-2 px-5 py-2 bg-primary text-white rounded-lg text-sm font-medium hover:bg-primary/90 disabled:opacity-50 transition-colors"
+            className="flex items-center gap-2 font-semibold text-sm transition-all disabled:opacity-50"
+            style={{ background: 'var(--dark)', color: '#fff', border: 'none', borderRadius: 6, padding: '9px 18px', cursor: 'pointer' }}
+            onMouseEnter={e => { if (!sending) e.currentTarget.style.background = '#162d55'; }}
+            onMouseLeave={e => { e.currentTarget.style.background = 'var(--dark)'; }}
           >
-            {sending ? (
-              <><div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div> Senden...</>
-            ) : (
-              <>📧 Email senden</>
-            )}
+            {sending ? <><div className="animate-spin rounded-full h-3.5 w-3.5 border-b-2 border-white flex-shrink-0"></div> Senden...</> : <>Email senden</>}
           </button>
         </div>
       </div>

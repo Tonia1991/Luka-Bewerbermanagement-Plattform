@@ -19,18 +19,13 @@ export default function TabellenAnsicht({ bewerbungen, auswahlModus, ausgewaehlt
   const [sortRichtung, setSortRichtung] = useState('asc');
 
   function handleSort(spalte) {
-    if (sortSpalte === spalte) {
-      setSortRichtung(r => r === 'asc' ? 'desc' : 'asc');
-    } else {
-      setSortSpalte(spalte);
-      setSortRichtung('asc');
-    }
+    if (sortSpalte === spalte) setSortRichtung(r => r === 'asc' ? 'desc' : 'asc');
+    else { setSortSpalte(spalte); setSortRichtung('asc'); }
   }
 
   const sortiert = [...bewerbungen].sort((a, b) => {
     if (!sortSpalte) return 0;
-    let va = a[sortSpalte];
-    let vb = b[sortSpalte];
+    let va = a[sortSpalte]; let vb = b[sortSpalte];
     if (typeof va === 'string') va = va.toLowerCase();
     if (typeof vb === 'string') vb = vb.toLowerCase();
     if (va < vb) return sortRichtung === 'asc' ? -1 : 1;
@@ -43,7 +38,11 @@ export default function TabellenAnsicht({ bewerbungen, auswahlModus, ausgewaehlt
     return (
       <th
         onClick={() => handleSort(feld)}
-        className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:text-primary select-none"
+        className="px-4 py-3 text-left cursor-pointer select-none transition-colors"
+        style={{
+          fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em',
+          color: aktiv ? 'var(--blue)' : 'var(--text-muted)',
+        }}
       >
         {label} {aktiv ? (sortRichtung === 'asc' ? '↑' : '↓') : ''}
       </th>
@@ -53,21 +52,18 @@ export default function TabellenAnsicht({ bewerbungen, auswahlModus, ausgewaehlt
   const alleAusgewaehlt = ausgewaehlte.length === bewerbungen.length && bewerbungen.length > 0;
 
   return (
-    <div className="overflow-x-auto rounded-xl border border-gray-200 bg-white">
-      <table className="min-w-full divide-y divide-gray-200">
-        <thead className="bg-gray-50">
-          <tr>
+    <div style={{ borderRadius: 8, border: '1px solid var(--border-l)', overflow: 'hidden', background: 'var(--light-card)' }}>
+      <table className="min-w-full">
+        <thead>
+          <tr style={{ background: 'var(--light)', borderBottom: '1px solid var(--border-l)' }}>
             {auswahlModus && (
               <th className="px-4 py-3">
                 <input
                   type="checkbox"
                   checked={alleAusgewaehlt}
                   onChange={() => {
-                    if (alleAusgewaehlt) {
-                      bewerbungen.forEach(b => ausgewaehlte.some(a => a.Id === b.Id) && onToggle(b));
-                    } else {
-                      bewerbungen.forEach(b => !ausgewaehlte.some(a => a.Id === b.Id) && onToggle(b));
-                    }
+                    if (alleAusgewaehlt) bewerbungen.forEach(b => ausgewaehlte.some(a => a.Id === b.Id) && onToggle(b));
+                    else bewerbungen.forEach(b => !ausgewaehlte.some(a => a.Id === b.Id) && onToggle(b));
                   }}
                   className="rounded"
                 />
@@ -78,13 +74,13 @@ export default function TabellenAnsicht({ bewerbungen, auswahlModus, ausgewaehlt
             <SortHeader label="Note" feld="KI_Note" />
             <SortHeader label="Status" feld="Status" />
             <SortHeader label="Datum" feld="Eingangsdatum" />
-            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Gehalt</th>
-            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">⚠️</th>
+            <th className="px-4 py-3 text-left" style={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)' }}>Gehalt</th>
+            <th className="px-4 py-3 text-left" style={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)' }}>Offen</th>
             <th className="px-4 py-3"></th>
           </tr>
         </thead>
-        <tbody className="bg-white divide-y divide-gray-100">
-          {sortiert.map(b => {
+        <tbody>
+          {sortiert.map((b, i) => {
             const alter = tageAlt(b.Eingangsdatum);
             const istWarnend = alter > 7 && b.Status !== 'Eingeladen' && b.Status !== 'Abgesagt';
             const ausgewaehlt = ausgewaehlte.some(a => a.Id === b.Id);
@@ -93,33 +89,36 @@ export default function TabellenAnsicht({ bewerbungen, auswahlModus, ausgewaehlt
               <tr
                 key={b.Id}
                 onClick={() => auswahlModus ? onToggle(b) : navigate(`/bewerbung/${b.Id}`)}
-                className={`cursor-pointer hover:bg-gray-50 transition-colors ${ausgewaehlt ? 'bg-primary/5' : ''} ${istWarnend ? 'border-l-2 border-l-red-400' : ''}`}
+                className="cursor-pointer transition-colors"
+                style={{
+                  borderBottom: i < sortiert.length - 1 ? '1px solid var(--border-l)' : 'none',
+                  background: ausgewaehlt ? 'rgba(74,140,200,0.04)' : 'transparent',
+                  borderLeft: istWarnend ? '2.5px solid rgba(239,68,68,0.45)' : '2.5px solid transparent',
+                }}
+                onMouseEnter={e => { if (!ausgewaehlt) e.currentTarget.style.background = 'var(--light)'; }}
+                onMouseLeave={e => { e.currentTarget.style.background = ausgewaehlt ? 'rgba(74,140,200,0.04)' : 'transparent'; }}
               >
                 {auswahlModus && (
                   <td className="px-4 py-3" onClick={e => e.stopPropagation()}>
-                    <input
-                      type="checkbox"
-                      checked={ausgewaehlt}
-                      onChange={() => onToggle(b)}
-                      className="rounded"
-                    />
+                    <input type="checkbox" checked={ausgewaehlt} onChange={() => onToggle(b)} className="rounded" />
                   </td>
                 )}
-                <td className="px-4 py-3 text-sm font-medium text-text-dark">{b.Name}</td>
-                <td className="px-4 py-3 text-sm text-text-muted">{b.Stelle}</td>
+                <td className="px-4 py-3 text-sm font-semibold" style={{ color: 'var(--text-d)' }}>{b.Name}</td>
+                <td className="px-4 py-3 text-sm" style={{ color: 'var(--text-sub)' }}>{b.Stelle}</td>
                 <td className="px-4 py-3"><KINoteBadge note={b.KI_Note} /></td>
                 <td className="px-4 py-3"><StatusBadge status={b.Status} /></td>
-                <td className="px-4 py-3 text-sm text-text-muted">{formatDatum(b.Eingangsdatum)}</td>
-                <td className="px-4 py-3 text-sm text-text-muted">
+                <td className="px-4 py-3 text-sm" style={{ color: 'var(--text-muted)' }}>{formatDatum(b.Eingangsdatum)}</td>
+                <td className="px-4 py-3 text-sm" style={{ color: 'var(--text-muted)' }}>
                   {b.Gehaltsvorstellung ? `${parseFloat(b.Gehaltsvorstellung).toLocaleString('de-DE')} €` : '–'}
                 </td>
-                <td className="px-4 py-3 text-sm">
-                  {istWarnend && <span className="text-red-500" title={`${alter} Tage offen`}>⚠️</span>}
+                <td className="px-4 py-3 text-xs font-medium" style={{ color: istWarnend ? '#dc2626' : 'var(--text-muted)' }}>
+                  {istWarnend ? `${alter} Tage` : '–'}
                 </td>
                 <td className="px-4 py-3 text-right">
                   <button
                     onClick={e => { e.stopPropagation(); navigate(`/bewerbung/${b.Id}`); }}
-                    className="text-primary hover:text-primary/80 text-sm font-medium"
+                    className="text-sm font-semibold transition-colors"
+                    style={{ color: 'var(--blue)', background: 'none', border: 'none', cursor: 'pointer' }}
                   >
                     →
                   </button>
@@ -129,7 +128,7 @@ export default function TabellenAnsicht({ bewerbungen, auswahlModus, ausgewaehlt
           })}
           {sortiert.length === 0 && (
             <tr>
-              <td colSpan={9} className="px-4 py-8 text-center text-sm text-gray-400">
+              <td colSpan={9} className="px-4 py-10 text-center text-sm" style={{ color: 'var(--text-muted)' }}>
                 Keine Bewerbungen gefunden.
               </td>
             </tr>

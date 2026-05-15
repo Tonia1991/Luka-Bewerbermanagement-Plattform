@@ -14,14 +14,13 @@ function formatDatum(datum) {
 function formatGehalt(gehalt) {
   if (!gehalt) return null;
   const zahl = parseFloat(String(gehalt).replace(/[^0-9.]/g, ''));
-  if (isNaN(zahl)) return gehalt;
-  return `${zahl.toLocaleString('de-DE')} EUR`;
+  return isNaN(zahl) ? gehalt : `${zahl.toLocaleString('de-DE')} €`;
 }
 
 const EMPFEHLUNG_CONFIG = {
-  'Einladen': { bg: 'bg-green-100', text: 'text-green-700', label: '💡 Einladen empfohlen' },
-  'Absagen': { bg: 'bg-red-100', text: 'text-red-700', label: '🚫 Absage empfohlen' },
-  'Prüfen': { bg: 'bg-yellow-100', text: 'text-yellow-700', label: '🔍 Weitere Prüfung empfohlen' },
+  'Einladen': { bg: 'rgba(22,163,74,0.07)', text: '#16a34a', border: 'rgba(22,163,74,0.18)', label: 'Einladen empfohlen' },
+  'Absagen':  { bg: 'rgba(220,38,38,0.07)', text: '#dc2626', border: 'rgba(220,38,38,0.18)', label: 'Absage empfohlen' },
+  'Prüfen':   { bg: 'rgba(184,150,42,0.07)', text: 'var(--gold)', border: 'rgba(184,150,42,0.18)', label: 'Weitere Prüfung' },
 };
 
 export default function KanbanKarte({ bewerber, auswahlModus, ausgewaehlt, onToggle }) {
@@ -31,54 +30,62 @@ export default function KanbanKarte({ bewerber, auswahlModus, ausgewaehlt, onTog
   const empfehlung = EMPFEHLUNG_CONFIG[bewerber.KI_Empfehlung];
 
   function handleClick() {
-    if (auswahlModus) {
-      onToggle(bewerber);
-    } else {
-      navigate(`/bewerbung/${bewerber.Id}`);
-    }
+    if (auswahlModus) onToggle(bewerber);
+    else navigate(`/bewerbung/${bewerber.Id}`);
   }
 
   return (
     <div
       onClick={handleClick}
-      className={`bg-white rounded-xl p-4 shadow-sm border-2 cursor-pointer transition-all hover:shadow-md space-y-2 ${
-        istWarnend ? 'border-red-400' : 'border-transparent'
-      } ${ausgewaehlt ? 'ring-2 ring-primary' : ''}`}
+      className="cursor-pointer transition-all duration-150"
+      style={{
+        background: 'var(--light-card)',
+        border: `1px solid ${istWarnend ? 'rgba(239,68,68,0.35)' : ausgewaehlt ? 'rgba(74,140,200,0.35)' : 'var(--border-l)'}`,
+        borderRadius: 6,
+        padding: '12px 14px',
+        borderLeft: istWarnend ? '3px solid rgba(239,68,68,0.6)' : ausgewaehlt ? '3px solid rgba(74,140,200,0.6)' : '3px solid transparent',
+      }}
+      onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 2px 8px rgba(15,30,58,0.08)'; e.currentTarget.style.borderColor = 'rgba(74,140,200,0.25)'; }}
+      onMouseLeave={e => { e.currentTarget.style.boxShadow = ''; e.currentTarget.style.borderColor = istWarnend ? 'rgba(239,68,68,0.35)' : ausgewaehlt ? 'rgba(74,140,200,0.35)' : 'var(--border-l)'; }}
     >
-      {/* Warn-Header */}
+      {/* Warn */}
       {istWarnend && (
-        <div className="flex items-center gap-1 text-xs text-red-600 font-medium">
-          ⚠️ Wartet seit {alter} Tagen
+        <div className="flex items-center gap-1 text-xs font-medium mb-2" style={{ color: '#dc2626' }}>
+          ! Wartet seit {alter} Tagen
         </div>
       )}
 
       {/* Name + Stelle */}
-      <div>
-        <div className="font-semibold text-text-dark text-sm">{bewerber.Name}</div>
-        <div className="text-xs text-text-muted">{bewerber.Stelle}</div>
+      <div className="mb-2">
+        <div className="font-semibold text-sm" style={{ color: 'var(--text-d)' }}>{bewerber.Name}</div>
+        <div className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>{bewerber.Stelle}</div>
       </div>
 
-      {/* KI Note */}
-      <div className="flex flex-wrap gap-1">
+      {/* Badges */}
+      <div className="flex flex-wrap gap-1.5 mb-3">
         <KINoteBadge note={bewerber.KI_Note} />
         {empfehlung && (
-          <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${empfehlung.bg} ${empfehlung.text}`}>
+          <span
+            className="text-xs px-2 py-0.5 rounded font-medium"
+            style={{ background: empfehlung.bg, color: empfehlung.text, border: `1px solid ${empfehlung.border}` }}
+          >
             {empfehlung.label}
           </span>
         )}
       </div>
 
       {/* Meta */}
-      <div className="flex items-center gap-3 text-xs text-text-muted">
-        <span>📅 {formatDatum(bewerber.Eingangsdatum)}</span>
-        {bewerber.Gehaltsvorstellung && (
-          <span>💰 {formatGehalt(bewerber.Gehaltsvorstellung)}</span>
-        )}
+      <div className="flex items-center gap-3 text-xs" style={{ color: 'var(--text-muted)' }}>
+        <span>{formatDatum(bewerber.Eingangsdatum)}</span>
+        {bewerber.Gehaltsvorstellung && <span>{formatGehalt(bewerber.Gehaltsvorstellung)}</span>}
       </div>
 
-      {/* Auswahl-Modus Checkbox */}
+      {/* Auswahl */}
       {auswahlModus && (
-        <div className="flex items-center gap-1.5 text-xs text-gray-500 pt-1 border-t">
+        <div
+          className="flex items-center gap-1.5 text-xs mt-3 pt-2"
+          style={{ borderTop: '1px solid var(--border-l)', color: 'var(--text-muted)' }}
+        >
           <input
             type="checkbox"
             checked={ausgewaehlt}

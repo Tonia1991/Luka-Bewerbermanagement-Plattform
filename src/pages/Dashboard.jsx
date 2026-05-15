@@ -18,7 +18,7 @@ function berechneTagesaufgaben(bewerbungen) {
     return b.Status === 'Screening abgeschlossen' && tageAlt > 7;
   });
   if (wartenAuf.length > 0) {
-    aufgaben.push(`⚠️ ${wartenAuf.length} Bewerbung(en) warten seit über 7 Tagen auf Entscheidung`);
+    aufgaben.push(`${wartenAuf.length} Bewerbung(en) warten seit über 7 Tagen auf Entscheidung`);
   }
 
   const keinScreening = bewerbungen.filter(b => {
@@ -26,7 +26,7 @@ function berechneTagesaufgaben(bewerbungen) {
     return b.Status === 'Neu' && stundenAlt > 24;
   });
   if (keinScreening.length > 0) {
-    aufgaben.push(`🤖 ${keinScreening.length} Bewerbung(en) noch ohne KI-Screening`);
+    aufgaben.push(`${keinScreening.length} Bewerbung(en) noch ohne KI-Screening`);
   }
 
   const baldLoeschen = bewerbungen.filter(b => {
@@ -35,7 +35,7 @@ function berechneTagesaufgaben(bewerbungen) {
     return tageNoch <= 7 && tageNoch > 0;
   });
   if (baldLoeschen.length > 0) {
-    aufgaben.push(`🗑️ ${baldLoeschen.length} Bewerbung(en): Löschfrist in weniger als 7 Tagen`);
+    aufgaben.push(`${baldLoeschen.length} Bewerbung(en): Löschfrist in weniger als 7 Tagen`);
   }
 
   return aufgaben;
@@ -136,19 +136,22 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="flex min-h-screen bg-bg-light">
+    <div className="flex min-h-screen" style={{ background: 'var(--light)' }}>
       <Sidebar stats={stats} />
 
       <div className="flex-1 flex flex-col overflow-hidden">
         <TopBar
-          titel="📊 Dashboard"
+          titel="Dashboard"
           rechts={
             <button
               onClick={ladeBewerbungen}
-              className="text-sm text-gray-500 hover:text-primary"
+              className="text-sm transition-colors"
+              style={{ color: 'var(--text-muted)', background: 'none', border: 'none', cursor: 'pointer' }}
+              onMouseEnter={e => e.currentTarget.style.color = 'var(--blue)'}
+              onMouseLeave={e => e.currentTarget.style.color = 'var(--text-muted)'}
               title="Aktualisieren"
             >
-              🔄
+              Aktualisieren
             </button>
           }
         />
@@ -159,15 +162,21 @@ export default function Dashboard() {
 
           {/* Massenauswahl Banner */}
           {auswahlModus && ausgewaehlte.length > 0 && (
-            <div className="flex items-center justify-between bg-red-50 border border-red-200 rounded-xl px-4 py-3">
-              <span className="text-sm font-medium text-red-700">
+            <div
+              className="flex items-center justify-between px-4 py-3 rounded"
+              style={{ background: 'rgba(220,38,38,0.06)', border: '1px solid rgba(220,38,38,0.2)' }}
+            >
+              <span className="text-sm font-medium" style={{ color: '#dc2626' }}>
                 {ausgewaehlte.length} Bewerbung(en) ausgewählt
               </span>
               <button
                 onClick={() => setMassenModal(true)}
-                className="flex items-center gap-1.5 px-4 py-1.5 bg-red-600 text-white text-sm rounded-lg hover:bg-red-700 transition-colors"
+                className="flex items-center gap-1.5 text-sm font-semibold transition-all"
+                style={{ background: '#dc2626', color: '#fff', border: 'none', borderRadius: 6, padding: '6px 14px', cursor: 'pointer' }}
+                onMouseEnter={e => e.currentTarget.style.background = '#b91c1c'}
+                onMouseLeave={e => e.currentTarget.style.background = '#dc2626'}
               >
-                ❌ Alle absagen
+                Alle absagen
               </button>
             </div>
           )}
@@ -182,29 +191,33 @@ export default function Dashboard() {
                 onAuswahlModusToggle={toggleAuswahlModus}
               />
             </div>
-            <div className="flex items-center gap-1 bg-white border border-gray-200 rounded-lg p-1 flex-shrink-0">
-              <button
-                onClick={() => setAnsicht('tabelle')}
-                className={`px-3 py-1.5 text-sm rounded transition-colors ${
-                  ansicht === 'tabelle' ? 'bg-primary text-white' : 'text-gray-500 hover:text-gray-700'
-                }`}
-              >
-                📋 Tabelle
-              </button>
-              <button
-                onClick={() => setAnsicht('kanban')}
-                className={`px-3 py-1.5 text-sm rounded transition-colors ${
-                  ansicht === 'kanban' ? 'bg-primary text-white' : 'text-gray-500 hover:text-gray-700'
-                }`}
-              >
-                🗂️ Kanban
-              </button>
+            <div
+              className="flex items-center gap-0.5 flex-shrink-0"
+              style={{ background: 'var(--light-card)', border: '1px solid var(--border-l)', borderRadius: 6, padding: 3 }}
+            >
+              {['tabelle', 'kanban'].map(a => (
+                <button
+                  key={a}
+                  onClick={() => setAnsicht(a)}
+                  className="text-xs font-semibold transition-all"
+                  style={{
+                    borderRadius: 4, padding: '5px 12px', border: 'none', cursor: 'pointer',
+                    background: ansicht === a ? 'var(--dark)' : 'transparent',
+                    color: ansicht === a ? '#fff' : 'var(--text-muted)',
+                  }}
+                >
+                  {a === 'tabelle' ? 'Tabelle' : 'Kanban'}
+                </button>
+              ))}
             </div>
           </div>
 
           {/* Fehler */}
           {fehler && (
-            <div className="bg-red-50 border border-red-200 rounded-xl p-4 text-sm text-red-700">
+            <div
+              className="rounded p-4 text-sm"
+              style={{ background: 'rgba(220,38,38,0.06)', border: '1px solid rgba(220,38,38,0.15)', color: '#dc2626' }}
+            >
               {fehler}
             </div>
           )}
@@ -212,7 +225,7 @@ export default function Dashboard() {
           {/* Loading */}
           {loading ? (
             <div className="flex justify-center py-12">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+              <div className="animate-spin rounded-full h-7 w-7 border-b-2" style={{ borderColor: 'var(--blue)' }}></div>
             </div>
           ) : ansicht === 'kanban' ? (
             <KanbanBoard

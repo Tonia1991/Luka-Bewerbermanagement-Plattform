@@ -1,16 +1,19 @@
 const STATUS_CONFIG = {
-  'Neu': { bg: 'bg-blue-100', text: 'text-blue-700', label: 'Neu' },
-  'Screening abgeschlossen': { bg: 'bg-purple-100', text: 'text-purple-700', label: 'Screening' },
-  'In Bearbeitung': { bg: 'bg-amber-100', text: 'text-amber-700', label: 'In Bearbeitung' },
-  'Eingeladen': { bg: 'bg-green-100', text: 'text-green-700', label: 'Eingeladen' },
-  'Abgesagt': { bg: 'bg-gray-100', text: 'text-gray-600', label: 'Abgesagt' },
+  'Neu':                    { bg: 'rgba(74,140,200,0.1)',  text: '#4A8CC8',  border: 'rgba(74,140,200,0.25)',  label: 'Neu' },
+  'Screening abgeschlossen':{ bg: 'rgba(139,92,246,0.1)', text: '#7c3aed',  border: 'rgba(139,92,246,0.25)', label: 'Screening' },
+  'In Bearbeitung':         { bg: 'rgba(184,150,42,0.1)', text: '#B8962A',  border: 'rgba(184,150,42,0.25)', label: 'In Bearbeitung' },
+  'Eingeladen':             { bg: 'rgba(22,163,74,0.1)',  text: '#16a34a',  border: 'rgba(22,163,74,0.25)',  label: 'Eingeladen' },
+  'Abgesagt':               { bg: 'rgba(107,114,128,0.1)',text: '#6b7280',  border: 'rgba(107,114,128,0.2)', label: 'Abgesagt' },
 };
 
 export default function StatusBadge({ status }) {
-  const config = STATUS_CONFIG[status] || { bg: 'bg-gray-100', text: 'text-gray-600', label: status };
+  const c = STATUS_CONFIG[status] || { bg: 'rgba(107,114,128,0.1)', text: '#6b7280', border: 'rgba(107,114,128,0.2)', label: status };
   return (
-    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${config.bg} ${config.text}`}>
-      {config.label}
+    <span
+      className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold"
+      style={{ background: c.bg, color: c.text, border: `1px solid ${c.border}` }}
+    >
+      {c.label}
     </span>
   );
 }
