@@ -1,14 +1,10 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const DOKUMENTE = [
-  { key: 'lebenslauf', name: 'Lebenslauf.pdf', datei: 'Lebenslauf.pdf' },
-  { key: 'unterlagen', name: 'Weitere Unterlagen.pdf', datei: 'WeitereUnterlagen.pdf' },
-  { key: 'ki_bericht', name: 'KI Screening Bericht.pdf', datei: 'KI_Screening_Bericht.pdf' },
-];
-
 export default function DokumentenAnzeige({ bewerber }) {
   const [aktivePDF, setAktivePDF] = useState(null);
+  const [dateien, setDateien] = useState([]);
+  const [ladeFehler, setLadeFehler] = useState(false);
   const [nextcloudBase, setNextcloudBase] = useState('');
 
   const nextcloudOrdner = bewerber.NextcloudOrdner_Pfad || bewerber.Nextcloud_Ordner || bewerber.NextcloudOrdner || '';
@@ -17,9 +13,17 @@ export default function DokumentenAnzeige({ bewerber }) {
     axios.get('/api/config').then(r => setNextcloudBase(r.data.nextcloudBaseUrl || '')).catch(() => {});
   }, []);
 
+  useEffect(() => {
+    if (!nextcloudOrdner) return;
+    setDateien([]);
+    setLadeFehler(false);
+    axios.get(`/api/dokument/liste?pfad=${encodeURIComponent(nextcloudOrdner)}`)
+      .then(r => setDateien(r.data.dateien || []))
+      .catch(() => setLadeFehler(true));
+  }, [nextcloudOrdner]);
+
   function pdfUrl(datei) {
-    const pfad = nextcloudOrdner ? `${nextcloudOrdner}/${datei}` : datei;
-    return `/api/dokument?pfad=${encodeURIComponent(pfad)}`;
+    return `/api/dokument?pfad=${encodeURIComponent(`${nextcloudOrdner}/${datei}`)}`;
   }
 
   function nextcloudLink() {
@@ -33,36 +37,38 @@ export default function DokumentenAnzeige({ bewerber }) {
 
       {!nextcloudOrdner ? (
         <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Kein Nextcloud-Ordner verknüpft.</p>
+      ) : ladeFehler ? (
+        <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Ordner nicht erreichbar.</p>
+      ) : dateien.length === 0 ? (
+        <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Keine Dateien im Ordner.</p>
       ) : (
         <>
           <div className="space-y-1.5">
-            {DOKUMENTE.map(dok => (
+            {dateien.map(datei => (
               <div
-                key={dok.key}
+                key={datei}
                 className="flex items-center justify-between gap-2 px-3 py-2 rounded transition-all"
                 style={{
-                  border: `1px solid ${aktivePDF === dok.datei ? 'rgba(74,140,200,0.3)' : 'var(--border-l)'}`,
-                  background: aktivePDF === dok.datei ? 'rgba(74,140,200,0.04)' : 'var(--light)',
+                  border: `1px solid ${aktivePDF === datei ? 'rgba(74,140,200,0.3)' : 'var(--border-l)'}`,
+                  background: aktivePDF === datei ? 'rgba(74,140,200,0.04)' : 'var(--light)',
                 }}
               >
-                <span className="text-sm" style={{ color: 'var(--text-d)' }}>{dok.name}</span>
+                <span className="text-sm" style={{ color: 'var(--text-d)' }}>{datei}</span>
                 <div className="flex items-center gap-2">
                   <button
-                    onClick={() => setAktivePDF(aktivePDF === dok.datei ? null : dok.datei)}
-                    className="text-xs font-medium transition-colors"
+                    onClick={() => setAktivePDF(aktivePDF === datei ? null : datei)}
+                    className="text-xs font-medium"
                     style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--blue)' }}
                   >
-                    {aktivePDF === dok.datei ? 'Schließen' : 'Anzeigen'}
+                    {aktivePDF === datei ? 'Schließen' : 'Anzeigen'}
                   </button>
-                  {nextcloudBase && (
-                    <a
-                      href={nextcloudLink()} target="_blank" rel="noopener noreferrer"
-                      className="text-xs font-medium"
-                      style={{ color: 'var(--text-muted)', textDecoration: 'none' }}
-                    >
-                      Nextcloud
-                    </a>
-                  )}
+                  <a
+                    href={pdfUrl(datei)} target="_blank" rel="noopener noreferrer"
+                    className="text-xs font-medium"
+                    style={{ color: 'var(--text-muted)', textDecoration: 'none' }}
+                  >
+                    Download
+                  </a>
                 </div>
               </div>
             ))}
@@ -70,11 +76,10 @@ export default function DokumentenAnzeige({ bewerber }) {
 
           {aktivePDF && (
             <div className="space-y-2">
-              <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Dokument anzeigen:</p>
               <iframe
                 src={pdfUrl(aktivePDF)} width="100%" height="600"
-                style={{ border: '1px solid var(--border-l)', borderRadius: 6 }}
-                title="Dokument"
+                style={{ border: '1px solid var(--border-l)', borderRadius: 6, display: 'block' }}
+                title={aktivePDF}
               />
             </div>
           )}
@@ -85,7 +90,7 @@ export default function DokumentenAnzeige({ bewerber }) {
               className="inline-flex items-center gap-1.5 text-sm font-medium"
               style={{ color: 'var(--blue)', textDecoration: 'none' }}
             >
-              In Nextcloud öffnen
+              In Nextcloud öffnen →
             </a>
           )}
         </>
