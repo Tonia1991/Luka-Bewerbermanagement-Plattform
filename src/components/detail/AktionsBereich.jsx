@@ -29,6 +29,8 @@ export default function AktionsBereich({ bewerber, onAktualisieren }) {
     }
   }
 
+  const entschieden = bewerber.Status === 'eingeladen' || bewerber.Status === 'abgesagt';
+
   return (
     <>
       <div className="card-light p-5 space-y-4 sticky top-4">
@@ -37,20 +39,20 @@ export default function AktionsBereich({ bewerber, onAktualisieren }) {
         <div className="flex gap-2">
           <button
             onClick={() => setEmailModal('einladen')}
-            disabled={bewerber.Status === 'eingeladen'}
+            disabled={entschieden}
             className="flex-1 flex items-center justify-center gap-1.5 text-sm font-semibold transition-all disabled:opacity-40 disabled:cursor-not-allowed"
             style={{ background: 'rgba(22,163,74,0.08)', color: '#16a34a', border: '1px solid rgba(22,163,74,0.2)', borderRadius: 6, padding: '9px 0', cursor: 'pointer' }}
-            onMouseEnter={e => { if (bewerber.Status !== 'eingeladen') { e.currentTarget.style.background = 'rgba(22,163,74,0.15)'; } }}
+            onMouseEnter={e => { if (!entschieden) e.currentTarget.style.background = 'rgba(22,163,74,0.15)'; }}
             onMouseLeave={e => { e.currentTarget.style.background = 'rgba(22,163,74,0.08)'; }}
           >
             Einladen
           </button>
           <button
             onClick={() => setEmailModal('absagen')}
-            disabled={bewerber.Status === 'abgesagt'}
+            disabled={entschieden}
             className="flex-1 flex items-center justify-center gap-1.5 text-sm font-semibold transition-all disabled:opacity-40 disabled:cursor-not-allowed"
             style={{ background: 'rgba(220,38,38,0.06)', color: '#dc2626', border: '1px solid rgba(220,38,38,0.18)', borderRadius: 6, padding: '9px 0', cursor: 'pointer' }}
-            onMouseEnter={e => { if (bewerber.Status !== 'abgesagt') { e.currentTarget.style.background = 'rgba(220,38,38,0.12)'; } }}
+            onMouseEnter={e => { if (!entschieden) e.currentTarget.style.background = 'rgba(220,38,38,0.12)'; }}
             onMouseLeave={e => { e.currentTarget.style.background = 'rgba(220,38,38,0.06)'; }}
           >
             Absagen
