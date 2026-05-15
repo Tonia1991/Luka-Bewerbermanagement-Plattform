@@ -80,7 +80,8 @@ router.get('/', async (req, res) => {
 
     res.json(response.data?.list || []);
   } catch (err) {
-    res.status(500).json({ error: 'Fehler beim Laden der Bewerbungen.', detail: err.message });
+    console.error('NocoDB Fehler:', err.message, err.response?.data);
+    res.status(500).json({ error: 'Fehler beim Laden der Bewerbungen.', detail: err.message, nocodb: err.response?.data });
   }
 });
 
