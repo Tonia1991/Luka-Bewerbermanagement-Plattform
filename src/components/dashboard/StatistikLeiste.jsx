@@ -21,8 +21,7 @@ export default function StatistikLeiste({ stats }) {
     <div className="space-y-3">
       <div className="grid grid-cols-5 gap-3">
         <StatCard label="Gesamt"     wert={stats.gesamt}     farbe="var(--text-d)" />
-        <StatCard label="Neu"        wert={stats.neu}        farbe="var(--blue)" />
-        <StatCard label="Screening"  wert={stats.screening}  farbe="#7c3aed" />
+        <StatCard label="Offen"      wert={stats.offen}      farbe="var(--blue)" />
         <StatCard label="Eingeladen" wert={stats.eingeladen} farbe="#16a34a" />
         <StatCard label="Abgesagt"   wert={stats.abgesagt}   farbe="var(--text-muted)" />
       </div>

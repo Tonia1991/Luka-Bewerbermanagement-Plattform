@@ -75,10 +75,9 @@ export default function Sidebar({ stats }) {
             Status
           </p>
         </div>
-        <NavItem to="/dashboard?status=Neu" label="Neu" badge={stats?.neu} />
-        <NavItem to="/dashboard?status=In%20Bearbeitung" label="In Bearbeitung" badge={stats?.inBearbeitung} />
-        <NavItem to="/dashboard?status=Eingeladen" label="Eingeladen" badge={stats?.eingeladen} />
-        <NavItem to="/dashboard?status=Abgesagt" label="Abgesagt" badge={stats?.abgesagt} />
+        <NavItem to="/dashboard?status=offen" label="Offen" badge={stats?.offen} />
+        <NavItem to="/dashboard?status=eingeladen" label="Eingeladen" badge={stats?.eingeladen} />
+        <NavItem to="/dashboard?status=abgesagt" label="Abgesagt" badge={stats?.abgesagt} />
       </nav>
 
       {/* Abmelden */}

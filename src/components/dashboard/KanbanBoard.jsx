@@ -1,10 +1,9 @@
 import KanbanKarte from './KanbanKarte.jsx';
 
 const SPALTEN = [
-  { status: 'Neu',                    label: 'Neu',        headerBg: 'rgba(74,140,200,0.05)',  headerBorder: 'rgba(74,140,200,0.12)' },
-  { status: 'Screening abgeschlossen', label: 'Screening',  headerBg: 'rgba(139,92,246,0.05)', headerBorder: 'rgba(139,92,246,0.12)' },
-  { status: 'Eingeladen',             label: 'Eingeladen', headerBg: 'rgba(22,163,74,0.05)',  headerBorder: 'rgba(22,163,74,0.12)' },
-  { status: 'Abgesagt',               label: 'Abgesagt',   headerBg: 'rgba(107,114,128,0.05)', headerBorder: 'rgba(107,114,128,0.12)' },
+  { status: 'offen',      label: 'Offen',      headerBg: 'rgba(74,140,200,0.05)',   headerBorder: 'rgba(74,140,200,0.12)' },
+  { status: 'eingeladen', label: 'Eingeladen', headerBg: 'rgba(22,163,74,0.05)',    headerBorder: 'rgba(22,163,74,0.12)' },
+  { status: 'abgesagt',   label: 'Abgesagt',   headerBg: 'rgba(107,114,128,0.05)', headerBorder: 'rgba(107,114,128,0.12)' },
 ];
 
 export default function KanbanBoard({ bewerbungen, auswahlModus, ausgewaehlte, onToggle }) {

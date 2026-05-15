@@ -5,7 +5,7 @@ const router = Router();
 const TABLE_ID = process.env.NOCODB_TABLE_ID || 'YOUR_TABLE_ID';
 
 function nocoHeaders() {
-  return { 'xc-auth': process.env.NOCODB_API_TOKEN };
+  return { 'xc-token': process.env.NOCODB_API_TOKEN };
 }
 
 function buildWhereClause(query) {

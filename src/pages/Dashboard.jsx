@@ -15,18 +15,10 @@ function berechneTagesaufgaben(bewerbungen) {
   const aufgaben = [];
   const wartenAuf = bewerbungen.filter(b => {
     const tageAlt = (Date.now() - new Date(b.Eingangsdatum)) / (1000 * 60 * 60 * 24);
-    return b.Status === 'Screening abgeschlossen' && tageAlt > 7;
+    return b.Status === 'offen' && tageAlt > 7;
   });
   if (wartenAuf.length > 0) {
     aufgaben.push(`${wartenAuf.length} Bewerbung(en) warten seit über 7 Tagen auf Entscheidung`);
-  }
-
-  const keinScreening = bewerbungen.filter(b => {
-    const stundenAlt = (Date.now() - new Date(b.Eingangsdatum)) / (1000 * 60 * 60);
-    return b.Status === 'Neu' && stundenAlt > 24;
-  });
-  if (keinScreening.length > 0) {
-    aufgaben.push(`${keinScreening.length} Bewerbung(en) noch ohne KI-Screening`);
   }
 
   const baldLoeschen = bewerbungen.filter(b => {
@@ -51,11 +43,9 @@ function berechneStats(bewerbungen) {
 
   return {
     gesamt: bewerbungen.length,
-    neu: bewerbungen.filter(b => b.Status === 'Neu').length,
-    screening: bewerbungen.filter(b => b.Status === 'Screening abgeschlossen').length,
-    inBearbeitung: bewerbungen.filter(b => b.Status === 'In Bearbeitung').length,
-    eingeladen: bewerbungen.filter(b => b.Status === 'Eingeladen').length,
-    abgesagt: bewerbungen.filter(b => b.Status === 'Abgesagt').length,
+    offen: bewerbungen.filter(b => b.Status === 'offen').length,
+    eingeladen: bewerbungen.filter(b => b.Status === 'eingeladen').length,
+    abgesagt: bewerbungen.filter(b => b.Status === 'abgesagt').length,
     avgNote,
     dieseWoche: bewerbungen.filter(b => new Date(b.Eingangsdatum) > wocheAgo).length,
   };
@@ -86,7 +76,8 @@ function filtereBewerbungen(bewerbungen, filter) {
 
     if (filter.suche) {
       const suche = filter.suche.toLowerCase();
-      if (!b.Name?.toLowerCase().includes(suche) && !b.Stelle?.toLowerCase().includes(suche)) return false;
+      const name = `${b.Vorname || ''} ${b.Nachname || ''}`.toLowerCase();
+      if (!name.includes(suche) && !(b.Stelle || b.Position || '').toLowerCase().includes(suche)) return false;
     }
 
     return true;
