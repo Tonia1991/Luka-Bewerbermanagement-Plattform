@@ -82,7 +82,7 @@ export default function TabellenAnsicht({ bewerbungen, auswahlModus, ausgewaehlt
         <tbody>
           {sortiert.map((b, i) => {
             const alter = tageAlt(b.Eingangsdatum);
-            const istWarnend = alter > 7 && b.Status !== 'Eingeladen' && b.Status !== 'Abgesagt';
+            const istWarnend = alter > 7 && b.Status !== 'eingeladen' && b.Status !== 'abgesagt';
             const ausgewaehlt = ausgewaehlte.some(a => a.Id === b.Id);
 
             return (

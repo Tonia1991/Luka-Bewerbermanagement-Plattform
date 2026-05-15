@@ -94,6 +94,10 @@ app.get('/api/auth/status', (req, res) => {
   res.json({ authenticated: !!req.session.authenticated });
 });
 
+app.get('/api/config', requireAuth, (req, res) => {
+  res.json({ nextcloudBaseUrl: process.env.NEXTCLOUD_BASE_URL || '' });
+});
+
 app.use('/api/bewerbungen', requireAuth, bewerbungenRouter);
 app.use('/api/entscheidung', requireAuth, entscheidungRouter);
 app.use('/api/email-vorschlag', requireAuth, emailRouter);

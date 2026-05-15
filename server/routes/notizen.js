@@ -35,7 +35,7 @@ router.patch('/:id', [
 
 router.patch('/:id/status', [
   param('id').isNumeric().withMessage('Ungültige ID.'),
-  body('status').isIn(['Neu', 'Screening abgeschlossen', 'In Bearbeitung', 'Eingeladen', 'Abgesagt'])
+  body('status').isIn(['offen', 'eingeladen', 'abgesagt'])
     .withMessage('Ungültiger Status.'),
 ], async (req, res) => {
   const errors = validationResult(req);

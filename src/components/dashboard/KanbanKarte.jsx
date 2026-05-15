@@ -26,7 +26,7 @@ const EMPFEHLUNG_CONFIG = {
 export default function KanbanKarte({ bewerber, auswahlModus, ausgewaehlt, onToggle }) {
   const navigate = useNavigate();
   const alter = tageAlt(bewerber.Eingangsdatum);
-  const istWarnend = alter > 7 && bewerber.Status !== 'Eingeladen' && bewerber.Status !== 'Abgesagt';
+  const istWarnend = alter > 7 && bewerber.Status !== 'eingeladen' && bewerber.Status !== 'abgesagt';
   const kiEmpfehlung = bewerber.KI_Empfehlung || (bewerber.KI_Bewertung_Volltext?.split('\n')[0]?.trim());
   const empfehlung = EMPFEHLUNG_CONFIG[kiEmpfehlung];
 

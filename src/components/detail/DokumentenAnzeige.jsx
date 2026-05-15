@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 
 const DOKUMENTE = [
   { key: 'lebenslauf', name: 'Lebenslauf.pdf', datei: 'Lebenslauf.pdf' },
@@ -8,8 +9,13 @@ const DOKUMENTE = [
 
 export default function DokumentenAnzeige({ bewerber }) {
   const [aktivePDF, setAktivePDF] = useState(null);
-  const nextcloudOrdner = bewerber.Nextcloud_Ordner || bewerber.NextcloudOrdner || '';
-  const nextcloudBase = bewerber.Nextcloud_Base || '';
+  const [nextcloudBase, setNextcloudBase] = useState('');
+
+  const nextcloudOrdner = bewerber.NextcloudOrdner_Pfad || bewerber.Nextcloud_Ordner || bewerber.NextcloudOrdner || '';
+
+  useEffect(() => {
+    axios.get('/api/config').then(r => setNextcloudBase(r.data.nextcloudBaseUrl || '')).catch(() => {});
+  }, []);
 
   function pdfUrl(datei) {
     const pfad = nextcloudOrdner ? `${nextcloudOrdner}/${datei}` : datei;
@@ -17,7 +23,7 @@ export default function DokumentenAnzeige({ bewerber }) {
   }
 
   function nextcloudLink() {
-    if (!nextcloudOrdner) return '#';
+    if (!nextcloudOrdner || !nextcloudBase) return '#';
     return `${nextcloudBase}/index.php/apps/files/?dir=${encodeURIComponent('/' + nextcloudOrdner)}`;
   }
 
@@ -48,13 +54,15 @@ export default function DokumentenAnzeige({ bewerber }) {
                   >
                     {aktivePDF === dok.datei ? 'Schließen' : 'Anzeigen'}
                   </button>
-                  <a
-                    href={nextcloudLink()} target="_blank" rel="noopener noreferrer"
-                    className="text-xs font-medium"
-                    style={{ color: 'var(--text-muted)', textDecoration: 'none' }}
-                  >
-                    Nextcloud
-                  </a>
+                  {nextcloudBase && (
+                    <a
+                      href={nextcloudLink()} target="_blank" rel="noopener noreferrer"
+                      className="text-xs font-medium"
+                      style={{ color: 'var(--text-muted)', textDecoration: 'none' }}
+                    >
+                      Nextcloud
+                    </a>
+                  )}
                 </div>
               </div>
             ))}
@@ -71,13 +79,15 @@ export default function DokumentenAnzeige({ bewerber }) {
             </div>
           )}
 
-          <a
-            href={nextcloudLink()} target="_blank" rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 text-sm font-medium"
-            style={{ color: 'var(--blue)', textDecoration: 'none' }}
-          >
-            In Nextcloud öffnen
-          </a>
+          {nextcloudBase && (
+            <a
+              href={nextcloudLink()} target="_blank" rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 text-sm font-medium"
+              style={{ color: 'var(--blue)', textDecoration: 'none' }}
+            >
+              In Nextcloud öffnen
+            </a>
+          )}
         </>
       )}
     </div>

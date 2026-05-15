@@ -1,9 +1,7 @@
 const STATUS_CONFIG = {
-  'Neu':                    { bg: 'rgba(74,140,200,0.1)',  text: '#4A8CC8',  border: 'rgba(74,140,200,0.25)',  label: 'Neu' },
-  'Screening abgeschlossen':{ bg: 'rgba(139,92,246,0.1)', text: '#7c3aed',  border: 'rgba(139,92,246,0.25)', label: 'Screening' },
-  'In Bearbeitung':         { bg: 'rgba(184,150,42,0.1)', text: '#B8962A',  border: 'rgba(184,150,42,0.25)', label: 'In Bearbeitung' },
-  'Eingeladen':             { bg: 'rgba(22,163,74,0.1)',  text: '#16a34a',  border: 'rgba(22,163,74,0.25)',  label: 'Eingeladen' },
-  'Abgesagt':               { bg: 'rgba(107,114,128,0.1)',text: '#6b7280',  border: 'rgba(107,114,128,0.2)', label: 'Abgesagt' },
+  'offen':      { bg: 'rgba(74,140,200,0.1)',  text: '#4A8CC8',  border: 'rgba(74,140,200,0.25)',  label: 'Offen' },
+  'eingeladen': { bg: 'rgba(22,163,74,0.1)',   text: '#16a34a',  border: 'rgba(22,163,74,0.25)',   label: 'Eingeladen' },
+  'abgesagt':   { bg: 'rgba(107,114,128,0.1)', text: '#6b7280',  border: 'rgba(107,114,128,0.2)',  label: 'Abgesagt' },
 };
 
 export default function StatusBadge({ status }) {

@@ -9,7 +9,7 @@ function tageAlt(datum) {
 export default function BewerberStammdaten({ bewerber }) {
   const navigate = useNavigate();
   const alter = tageAlt(bewerber.Eingangsdatum);
-  const istWarnend = alter > 7 && bewerber.Status !== 'Eingeladen' && bewerber.Status !== 'Abgesagt';
+  const istWarnend = alter > 7 && bewerber.Status !== 'eingeladen' && bewerber.Status !== 'abgesagt';
 
   return (
     <div className="space-y-3">
