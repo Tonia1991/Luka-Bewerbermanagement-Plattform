@@ -18,8 +18,12 @@ router.post('/', validateEntscheidung, async (req, res) => {
   const { nocodb_id, aktion, email_betreff, email_text } = req.body;
 
   try {
+    const webhookUrl = process.env.NODE_ENV !== 'production' && process.env.N8N_WEBHOOK_ENTSCHEIDUNG_TEST
+      ? process.env.N8N_WEBHOOK_ENTSCHEIDUNG_TEST
+      : process.env.N8N_WEBHOOK_ENTSCHEIDUNG;
+
     const webhookResponse = await axios.post(
-      process.env.N8N_WEBHOOK_ENTSCHEIDUNG,
+      webhookUrl,
       { nocodb_id, aktion, email_betreff, email_text },
       { timeout: 30000 }
     );
