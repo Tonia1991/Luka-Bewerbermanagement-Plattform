@@ -11,7 +11,8 @@ function Abschnitt({ label, text }) {
 }
 
 export default function KIBewertung({ bewerber }) {
-  const hatScreening = bewerber.KI_Note || bewerber.KI_Zusammenfassung;
+  const kiEmpfehlung = bewerber.KI_Empfehlung || (bewerber.KI_Bewertung_Volltext?.split('\n')[0]?.trim());
+  const hatScreening = bewerber.KI_Score || bewerber.KI_Bewertung_Volltext;
 
   return (
     <div className="card-light p-5 space-y-4">
@@ -23,19 +24,15 @@ export default function KIBewertung({ bewerber }) {
         <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Noch kein KI-Screening vorhanden.</p>
       ) : (
         <>
-          <KINoteBadge note={bewerber.KI_Note} size="lg" />
+          <KINoteBadge note={bewerber.KI_Score} size="lg" />
 
           <div className="space-y-0">
-            <Abschnitt label="Stärken" text={bewerber.KI_Staerken} />
-            <Abschnitt label="Schwächen" text={bewerber.KI_Schwaechen} />
-            <Abschnitt label="Fehlende Qualifikationen" text={bewerber.KI_Fehlende_Qualifikationen} />
-            <Abschnitt label="Risiken" text={bewerber.KI_Risiken} />
-            <Abschnitt label="Zusammenfassung" text={bewerber.KI_Zusammenfassung} />
+            <Abschnitt label="Bewertung" text={bewerber.KI_Bewertung_Volltext} />
           </div>
 
-          {bewerber.KI_Empfehlung && (
+          {kiEmpfehlung && (
             <div className="rounded px-3 py-2.5 text-sm font-medium" style={{ background: 'rgba(74,140,200,0.06)', color: 'var(--blue)', border: '1px solid rgba(74,140,200,0.18)' }}>
-              KI-Empfehlung: {bewerber.KI_Empfehlung}
+              KI-Empfehlung: {kiEmpfehlung}
             </div>
           )}
 

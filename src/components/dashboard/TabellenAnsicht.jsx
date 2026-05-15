@@ -69,9 +69,9 @@ export default function TabellenAnsicht({ bewerbungen, auswahlModus, ausgewaehlt
                 />
               </th>
             )}
-            <SortHeader label="Name" feld="Name" />
+            <SortHeader label="Name" feld="Nachname" />
             <SortHeader label="Stelle" feld="Stelle" />
-            <SortHeader label="Note" feld="KI_Note" />
+            <SortHeader label="Note" feld="KI_Score" />
             <SortHeader label="Status" feld="Status" />
             <SortHeader label="Datum" feld="Eingangsdatum" />
             <th className="px-4 py-3 text-left" style={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)' }}>Gehalt</th>
@@ -103,9 +103,9 @@ export default function TabellenAnsicht({ bewerbungen, auswahlModus, ausgewaehlt
                     <input type="checkbox" checked={ausgewaehlt} onChange={() => onToggle(b)} className="rounded" />
                   </td>
                 )}
-                <td className="px-4 py-3 text-sm font-semibold" style={{ color: 'var(--text-d)' }}>{b.Name}</td>
-                <td className="px-4 py-3 text-sm" style={{ color: 'var(--text-sub)' }}>{b.Stelle}</td>
-                <td className="px-4 py-3"><KINoteBadge note={b.KI_Note} /></td>
+                <td className="px-4 py-3 text-sm font-semibold" style={{ color: 'var(--text-d)' }}>{b.Vorname} {b.Nachname}</td>
+                <td className="px-4 py-3 text-sm" style={{ color: 'var(--text-sub)' }}>{b.Stelle || b.Position}</td>
+                <td className="px-4 py-3"><KINoteBadge note={b.KI_Score} /></td>
                 <td className="px-4 py-3"><StatusBadge status={b.Status} /></td>
                 <td className="px-4 py-3 text-sm" style={{ color: 'var(--text-muted)' }}>{formatDatum(b.Eingangsdatum)}</td>
                 <td className="px-4 py-3 text-sm" style={{ color: 'var(--text-muted)' }}>

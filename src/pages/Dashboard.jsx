@@ -30,8 +30,8 @@ function berechneTagesaufgaben(bewerbungen) {
   }
 
   const baldLoeschen = bewerbungen.filter(b => {
-    if (!b.Loeschdatum) return false;
-    const tageNoch = (new Date(b.Loeschdatum) - Date.now()) / (1000 * 60 * 60 * 24);
+    if (!b.Loeschdatum_geplant) return false;
+    const tageNoch = (new Date(b.Loeschdatum_geplant) - Date.now()) / (1000 * 60 * 60 * 24);
     return tageNoch <= 7 && tageNoch > 0;
   });
   if (baldLoeschen.length > 0) {
@@ -42,9 +42,9 @@ function berechneTagesaufgaben(bewerbungen) {
 }
 
 function berechneStats(bewerbungen) {
-  const mitNote = bewerbungen.filter(b => b.KI_Note);
+  const mitNote = bewerbungen.filter(b => b.KI_Score);
   const avgNote = mitNote.length > 0
-    ? (mitNote.reduce((s, b) => s + b.KI_Note, 0) / mitNote.length).toFixed(1)
+    ? (mitNote.reduce((s, b) => s + b.KI_Score, 0) / mitNote.length).toFixed(1)
     : null;
 
   const wocheAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
@@ -65,9 +65,9 @@ function filtereBewerbungen(bewerbungen, filter) {
   return bewerbungen.filter(b => {
     if (filter.stelle !== 'Alle' && b.Stelle !== filter.stelle) return false;
 
-    if (filter.note === 'gut' && (b.KI_Note > 2 || !b.KI_Note)) return false;
-    if (filter.note === 'befriedigend' && b.KI_Note !== 3) return false;
-    if (filter.note === 'kritisch' && (!b.KI_Note || b.KI_Note < 4)) return false;
+    if (filter.note === 'gut' && (b.KI_Score > 2 || !b.KI_Score)) return false;
+    if (filter.note === 'befriedigend' && b.KI_Score !== 3) return false;
+    if (filter.note === 'kritisch' && (!b.KI_Score || b.KI_Score < 4)) return false;
 
     if (filter.zeitraum !== 'Alle' && b.Eingangsdatum) {
       const d = new Date(b.Eingangsdatum);

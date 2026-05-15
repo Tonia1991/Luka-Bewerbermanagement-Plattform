@@ -20,7 +20,7 @@ function buildWhereClause(query) {
   }
 
   if (query.note_max) {
-    conditions.push(`(KI_Note,lte,${query.note_max})`);
+    conditions.push(`(KI_Score,lte,${query.note_max})`);
   }
 
   if (query.zeitraum && query.zeitraum !== 'Alle') {
@@ -48,8 +48,8 @@ function buildSortParam(sort) {
   const sortMap = {
     'Neueste': '-Eingangsdatum',
     'Aelteste': 'Eingangsdatum',
-    'NoteAuf': 'KI_Note',
-    'NoteAb': '-KI_Note',
+    'NoteAuf': 'KI_Score',
+    'NoteAb': '-KI_Score',
   };
   return sortMap[sort] || '-Eingangsdatum';
 }
@@ -68,8 +68,9 @@ router.get('/', async (req, res) => {
     }
 
     if (req.query.suche) {
+      const q = req.query.suche;
       params.where = (params.where ? params.where + '~and' : '') +
-        `(Name,like,%${req.query.suche}%)`;
+        `(Vorname,like,%${q}%)~or(Nachname,like,%${q}%)`;
     }
 
     const response = await axios.get(

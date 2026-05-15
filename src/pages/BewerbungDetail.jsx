@@ -52,7 +52,7 @@ export default function BewerbungDetail() {
       <Sidebar stats={null} />
 
       <div className="flex-1 flex flex-col overflow-hidden">
-        <TopBar titel={bewerber.Name} />
+        <TopBar titel={`${bewerber.Vorname} ${bewerber.Nachname}`} />
 
         <main className="flex-1 overflow-auto p-6">
           <div className="grid gap-5 max-w-7xl" style={{ gridTemplateColumns: '1fr 360px' }}>

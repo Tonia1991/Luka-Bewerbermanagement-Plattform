@@ -19,9 +19,9 @@ export default function BewerberStammdaten({ bewerber }) {
           Dashboard
         </button>
         <span>›</span>
-        <span>{bewerber.Stelle}</span>
+        <span>{bewerber.Stelle || bewerber.Position}</span>
         <span>›</span>
-        <span style={{ color: 'var(--text-d)', fontWeight: 600 }}>{bewerber.Name}</span>
+        <span style={{ color: 'var(--text-d)', fontWeight: 600 }}>{bewerber.Vorname} {bewerber.Nachname}</span>
       </nav>
 
       {/* Warn-Box */}
@@ -35,8 +35,8 @@ export default function BewerberStammdaten({ bewerber }) {
       <div className="card-light p-5 space-y-4">
         <div className="flex items-start justify-between gap-4">
           <div>
-            <h1 className="text-lg font-bold" style={{ color: 'var(--text-d)', letterSpacing: '-0.02em' }}>{bewerber.Name}</h1>
-            <p className="text-sm mt-0.5" style={{ color: 'var(--text-muted)' }}>{bewerber.Stelle}</p>
+            <h1 className="text-lg font-bold" style={{ color: 'var(--text-d)', letterSpacing: '-0.02em' }}>{bewerber.Vorname} {bewerber.Nachname}</h1>
+            <p className="text-sm mt-0.5" style={{ color: 'var(--text-muted)' }}>{bewerber.Stelle || bewerber.Position}</p>
           </div>
           <StatusBadge status={bewerber.Status} />
         </div>

@@ -27,7 +27,8 @@ export default function KanbanKarte({ bewerber, auswahlModus, ausgewaehlt, onTog
   const navigate = useNavigate();
   const alter = tageAlt(bewerber.Eingangsdatum);
   const istWarnend = alter > 7 && bewerber.Status !== 'Eingeladen' && bewerber.Status !== 'Abgesagt';
-  const empfehlung = EMPFEHLUNG_CONFIG[bewerber.KI_Empfehlung];
+  const kiEmpfehlung = bewerber.KI_Empfehlung || (bewerber.KI_Bewertung_Volltext?.split('\n')[0]?.trim());
+  const empfehlung = EMPFEHLUNG_CONFIG[kiEmpfehlung];
 
   function handleClick() {
     if (auswahlModus) onToggle(bewerber);
@@ -57,13 +58,13 @@ export default function KanbanKarte({ bewerber, auswahlModus, ausgewaehlt, onTog
 
       {/* Name + Stelle */}
       <div className="mb-2">
-        <div className="font-semibold text-sm" style={{ color: 'var(--text-d)' }}>{bewerber.Name}</div>
-        <div className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>{bewerber.Stelle}</div>
+        <div className="font-semibold text-sm" style={{ color: 'var(--text-d)' }}>{bewerber.Vorname} {bewerber.Nachname}</div>
+        <div className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>{bewerber.Stelle || bewerber.Position}</div>
       </div>
 
       {/* Badges */}
       <div className="flex flex-wrap gap-1.5 mb-3">
-        <KINoteBadge note={bewerber.KI_Note} />
+        <KINoteBadge note={bewerber.KI_Score} />
         {empfehlung && (
           <span
             className="text-xs px-2 py-0.5 rounded font-medium"
