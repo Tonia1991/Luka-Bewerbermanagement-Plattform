@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import Sidebar from '../components/layout/Sidebar.jsx';
 import TopBar from '../components/layout/TopBar.jsx';
@@ -53,6 +54,7 @@ function berechneStats(bewerbungen) {
 
 function filtereBewerbungen(bewerbungen, filter) {
   return bewerbungen.filter(b => {
+    if (filter.status && b.Status !== filter.status) return false;
     if (filter.stelle !== 'Alle' && b.Stelle !== filter.stelle) return false;
 
     if (filter.note === 'gut' && (b.KI_Score > 2 || !b.KI_Score)) return false;
@@ -85,11 +87,18 @@ function filtereBewerbungen(bewerbungen, filter) {
 }
 
 export default function Dashboard() {
+  const [searchParams] = useSearchParams();
   const [bewerbungen, setBewerbungen] = useState([]);
   const [loading, setLoading] = useState(true);
   const [fehler, setFehler] = useState(null);
   const [ansicht, setAnsicht] = useState('kanban');
   const [filter, setFilter] = useState(STANDARD_FILTER);
+
+  useEffect(() => {
+    const statusParam = searchParams.get('status');
+    if (statusParam) setFilter(f => ({ ...f, status: statusParam }));
+    else setFilter(f => ({ ...f, status: undefined }));
+  }, [searchParams]);
   const [auswahlModus, setAuswahlModus] = useState(false);
   const [ausgewaehlte, setAusgewaehlte] = useState([]);
   const [massenModal, setMassenModal] = useState(false);
