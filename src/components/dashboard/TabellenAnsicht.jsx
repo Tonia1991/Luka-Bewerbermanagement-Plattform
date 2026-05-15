@@ -75,7 +75,9 @@ export default function TabellenAnsicht({ bewerbungen, auswahlModus, ausgewaehlt
             <SortHeader label="Status" feld="Status" />
             <SortHeader label="Datum" feld="Eingangsdatum" />
             <th className="px-4 py-3 text-left" style={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)' }}>Gehalt</th>
-            <th className="px-4 py-3 text-left" style={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)' }}>Offen</th>
+            <SortHeader label="Verfügbar ab" feld="Verfuegbarkeit" />
+            <th className="px-4 py-3 text-left" style={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)' }}>Email</th>
+            <th className="px-4 py-3 text-left" style={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)' }}>Telefon</th>
             <th className="px-4 py-3"></th>
           </tr>
         </thead>
@@ -111,9 +113,9 @@ export default function TabellenAnsicht({ bewerbungen, auswahlModus, ausgewaehlt
                 <td className="px-4 py-3 text-sm" style={{ color: 'var(--text-muted)' }}>
                   {b.Gehaltsvorstellung ? `${parseFloat(b.Gehaltsvorstellung).toLocaleString('de-DE')} €` : '–'}
                 </td>
-                <td className="px-4 py-3 text-xs font-medium" style={{ color: istWarnend ? '#dc2626' : 'var(--text-muted)' }}>
-                  {istWarnend ? `${alter} Tage` : '–'}
-                </td>
+                <td className="px-4 py-3 text-sm" style={{ color: 'var(--text-muted)' }}>{b.Verfuegbarkeit || '–'}</td>
+                <td className="px-4 py-3 text-sm" style={{ color: 'var(--text-muted)' }}>{b.Email || '–'}</td>
+                <td className="px-4 py-3 text-sm" style={{ color: 'var(--text-muted)' }}>{b.Telefon || '–'}</td>
                 <td className="px-4 py-3 text-right">
                   <button
                     onClick={e => { e.stopPropagation(); navigate(`/bewerbung/${b.Id}`); }}
@@ -128,7 +130,7 @@ export default function TabellenAnsicht({ bewerbungen, auswahlModus, ausgewaehlt
           })}
           {sortiert.length === 0 && (
             <tr>
-              <td colSpan={9} className="px-4 py-10 text-center text-sm" style={{ color: 'var(--text-muted)' }}>
+              <td colSpan={11} className="px-4 py-10 text-center text-sm" style={{ color: 'var(--text-muted)' }}>
                 Keine Bewerbungen gefunden.
               </td>
             </tr>

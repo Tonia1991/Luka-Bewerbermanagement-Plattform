@@ -79,7 +79,16 @@ export default function KanbanKarte({ bewerber, auswahlModus, ausgewaehlt, onTog
       <div className="flex items-center gap-3 text-xs" style={{ color: 'var(--text-muted)' }}>
         <span>{formatDatum(bewerber.Eingangsdatum)}</span>
         {bewerber.Gehaltsvorstellung && <span>{formatGehalt(bewerber.Gehaltsvorstellung)}</span>}
+        {bewerber.Verfuegbarkeit && <span>ab {bewerber.Verfuegbarkeit}</span>}
       </div>
+
+      {/* Kontakt */}
+      {(bewerber.Email || bewerber.Telefon) && (
+        <div className="flex flex-wrap gap-x-3 gap-y-0.5 mt-1.5 text-xs" style={{ color: 'var(--text-muted)' }}>
+          {bewerber.Email && <span>{bewerber.Email}</span>}
+          {bewerber.Telefon && <span>{bewerber.Telefon}</span>}
+        </div>
+      )}
 
       {/* Auswahl */}
       {auswahlModus && (

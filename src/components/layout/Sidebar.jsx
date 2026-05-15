@@ -69,15 +69,6 @@ export default function Sidebar({ stats }) {
         </p>
         <NavItem to="/dashboard" label="Dashboard" end />
         <NavItem to="/dashboard" label="Alle Bewerbungen" badge={stats?.gesamt} />
-
-        <div className="pt-3 pb-1">
-          <p className="text-xs font-semibold uppercase tracking-widest px-3 mb-2" style={{ color: 'rgba(255,255,255,0.2)', fontSize: 9 }}>
-            Status
-          </p>
-        </div>
-        <NavItem to="/dashboard?status=offen" label="Offen" badge={stats?.offen} />
-        <NavItem to="/dashboard?status=eingeladen" label="Eingeladen" badge={stats?.eingeladen} />
-        <NavItem to="/dashboard?status=abgesagt" label="Abgesagt" badge={stats?.abgesagt} />
       </nav>
 
       {/* Abmelden */}

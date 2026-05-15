@@ -1,4 +1,3 @@
-import { useNavigate } from 'react-router-dom';
 import StatusBadge from '../shared/StatusBadge.jsx';
 
 function tageAlt(datum) {
@@ -7,23 +6,11 @@ function tageAlt(datum) {
 }
 
 export default function BewerberStammdaten({ bewerber }) {
-  const navigate = useNavigate();
   const alter = tageAlt(bewerber.Eingangsdatum);
   const istWarnend = alter > 7 && bewerber.Status !== 'eingeladen' && bewerber.Status !== 'abgesagt';
 
   return (
     <div className="space-y-3">
-      {/* Breadcrumb */}
-      <nav className="flex items-center gap-2 text-xs" style={{ color: 'var(--text-muted)' }}>
-        <button onClick={() => navigate('/dashboard')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--blue)', fontSize: 12 }}>
-          Dashboard
-        </button>
-        <span>›</span>
-        <span>{bewerber.Stelle || bewerber.Position}</span>
-        <span>›</span>
-        <span style={{ color: 'var(--text-d)', fontWeight: 600 }}>{bewerber.Vorname} {bewerber.Nachname}</span>
-      </nav>
-
       {/* Warn-Box */}
       {istWarnend && (
         <div className="flex items-center gap-2 px-4 py-3 rounded text-sm" style={{ background: 'rgba(239,68,68,0.05)', border: '1px solid rgba(239,68,68,0.18)', color: '#dc2626' }}>

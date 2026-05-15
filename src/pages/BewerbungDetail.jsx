@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Sidebar from '../components/layout/Sidebar.jsx';
 import TopBar from '../components/layout/TopBar.jsx';
@@ -12,6 +12,7 @@ import AktionsBereich from '../components/detail/AktionsBereich.jsx';
 
 export default function BewerbungDetail() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [bewerber, setBewerber] = useState(null);
   const [loading, setLoading] = useState(true);
   const [fehler, setFehler] = useState(null);
@@ -55,6 +56,17 @@ export default function BewerbungDetail() {
         <TopBar titel={`${bewerber.Vorname} ${bewerber.Nachname}`} />
 
         <main className="flex-1 overflow-auto p-6">
+          {/* Breadcrumb */}
+          <nav className="flex items-center gap-2 text-xs mb-4" style={{ color: 'var(--text-muted)' }}>
+            <button onClick={() => navigate('/dashboard')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--blue)', fontSize: 12 }}>
+              Dashboard
+            </button>
+            <span>›</span>
+            <span>{bewerber.Stelle || bewerber.Position}</span>
+            <span>›</span>
+            <span style={{ color: 'var(--text-d)', fontWeight: 600 }}>{bewerber.Vorname} {bewerber.Nachname}</span>
+          </nav>
+
           <div className="grid gap-5 max-w-7xl" style={{ gridTemplateColumns: '1fr 360px' }}>
             {/* Linke Spalte */}
             <div className="space-y-4 min-w-0">
