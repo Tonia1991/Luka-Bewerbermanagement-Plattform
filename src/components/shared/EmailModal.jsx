@@ -1,31 +1,29 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const VORLAGE_EINLADUNG_BETREFF = () => `Einladung zum Vorstellungsgespräch – Biohacking Club`;
-const VORLAGE_EINLADUNG_TEXT = (vorname, nachname, stelle) => `Sehr geehrte/r ${vorname} ${nachname},
+const VORLAGE_EINLADUNG_BETREFF = () => `Einladung zum Gespräch – Biohacking Club Berlin`;
+const VORLAGE_EINLADUNG_TEXT = (vorname, nachname, stelle) => `Hey ${vorname},
 
-vielen Dank für Ihre Bewerbung als ${stelle} bei uns im Biohacking Club.
+danke für deine Bewerbung als ${stelle} bei uns im Biohacking Club – wir haben uns deine Unterlagen genau angeschaut und sind begeistert!
 
-Wir freuen uns, Sie zu einem persönlichen Vorstellungsgespräch einzuladen.
-Wir werden uns in Kürze mit Ihnen in Verbindung setzen, um einen Termin zu vereinbaren.
+Wir würden dich gerne persönlich kennenlernen und melden uns in den nächsten Tagen bei dir, um einen gemeinsamen Termin zu finden.
 
-Mit freundlichen Grüßen,
-Das Team des Biohacking Club`;
+Bis bald,
+Das Team vom Biohacking Club Berlin`;
 
-const VORLAGE_ABSAGE_BETREFF = () => `Ihre Bewerbung beim Biohacking Club`;
-const VORLAGE_ABSAGE_TEXT = (vorname, nachname, stelle) => `Sehr geehrte/r ${vorname} ${nachname},
+const VORLAGE_ABSAGE_BETREFF = () => `Deine Bewerbung beim Biohacking Club Berlin`;
+const VORLAGE_ABSAGE_TEXT = (vorname, nachname, stelle) => `Hey ${vorname},
 
-vielen Dank für Ihr Interesse an der Stelle als ${stelle} bei uns im Biohacking Club und die Zeit, die Sie in Ihre Bewerbung investiert haben.
+danke, dass du dir die Zeit genommen hast, dich als ${stelle} bei uns zu bewerben – das wissen wir wirklich zu schätzen.
 
-Nach sorgfältiger Prüfung Ihrer Unterlagen müssen wir Ihnen leider mitteilen, dass wir Ihre Bewerbung nicht weiterverfolgen können.
+Nach sorgfältiger Prüfung deiner Unterlagen haben wir uns leider gegen eine Einladung zum Gespräch entschieden. Das war keine leichte Entscheidung, da wir viele tolle Bewerbungen erhalten haben.
 
-Für Ihren weiteren beruflichen Weg wünschen wir Ihnen alles Gute.
+Wir wünschen dir alles Gute für deinen weiteren Weg und hoffen, dass du die richtige Stelle findest!
 
-Mit freundlichen Grüßen,
-Das Team des Biohacking Club
+Das Team vom Biohacking Club Berlin
 
 ---
-Datenschutzhinweis: Ihre Bewerbungsunterlagen werden gemäß DSGVO innerhalb von 30 Tagen nach dieser Mitteilung vollständig gelöscht.`;
+Datenschutzhinweis: Deine Bewerbungsunterlagen werden gemäß DSGVO innerhalb von 30 Tagen nach dieser Mitteilung vollständig gelöscht.`;
 
 const tabStyle = (aktiv) => ({
   padding: '5px 12px', borderRadius: 4, fontSize: 13, fontWeight: 500,

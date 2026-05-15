@@ -17,11 +17,16 @@ export default function AktionsBereich({ bewerber, onAktualisieren }) {
   }
 
   async function handleEntscheidung({ betreff, text }) {
-    await axios.post('/api/entscheidung', {
-      nocodb_id: bewerber.Id, aktion: emailModal,
-      email_betreff: betreff, email_text: text,
-    });
-    onAktualisieren();
+    try {
+      await axios.post('/api/entscheidung', {
+        nocodb_id: bewerber.Id, aktion: emailModal,
+        email_betreff: betreff, email_text: text,
+      });
+      onAktualisieren();
+    } catch (err) {
+      setFehler(`Fehler: ${err.response?.data?.detail || err.response?.data?.error || err.message}`);
+      throw err;
+    }
   }
 
   return (
