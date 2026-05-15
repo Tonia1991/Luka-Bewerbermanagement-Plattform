@@ -6,7 +6,7 @@ import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { rateLimit } from 'express-rate-limit';
-import bcrypt from 'bcrypt';
+
 
 import { requireAuth } from './auth.js';
 import bewerbungenRouter from './routes/bewerbungen.js';
@@ -67,13 +67,12 @@ app.post('/api/login', loginLimiter, async (req, res) => {
   }
 
   try {
-    const hash = process.env.ADMIN_PASSWORD_HASH;
-    if (!hash) {
+    const adminPassword = process.env.ADMIN_PASSWORD;
+    if (!adminPassword) {
       return res.status(500).json({ error: 'Serverkonfigurationsfehler.' });
     }
 
-    const match = await bcrypt.compare(password, hash);
-    if (!match) {
+    if (password !== adminPassword) {
       return res.status(401).json({ error: 'Falsches Passwort.' });
     }
 
