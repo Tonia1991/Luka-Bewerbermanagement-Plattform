@@ -13,6 +13,10 @@ function validPfad(pfad) {
   return pfad && typeof pfad === 'string' && !pfad.includes('..') && !pfad.includes('//');
 }
 
+function encodePfad(pfad) {
+  return pfad.split('/').map(s => encodeURIComponent(s)).join('/');
+}
+
 // Datei-Inhalt streamen
 router.get('/', async (req, res) => {
   const { pfad } = req.query;
@@ -22,16 +26,21 @@ router.get('/', async (req, res) => {
   if (!baseUrl || !user) return res.status(500).json({ error: 'Nextcloud nicht konfiguriert.' });
 
   try {
-    const response = await fetch(`${baseUrl}/remote.php/dav/files/${user}/${pfad}`, {
+    const url = `${baseUrl}/remote.php/dav/files/${user}/${encodePfad(pfad)}`;
+    const response = await fetch(url, {
       headers: { Authorization: `Basic ${credentials}` },
     });
-    if (!response.ok) return res.status(response.status).json({ error: 'Dokument nicht gefunden.' });
+    if (!response.ok) {
+      console.error('Nextcloud Datei Fehler:', response.status, url);
+      return res.status(response.status).json({ error: 'Dokument nicht gefunden.', status: response.status });
+    }
 
     res.setHeader('Content-Type', response.headers.get('content-type') || 'application/pdf');
     res.setHeader('Content-Disposition', 'inline');
     res.setHeader('X-Content-Type-Options', 'nosniff');
     response.body.pipe(res);
   } catch (err) {
+    console.error('Nextcloud Datei Exception:', err.message);
     res.status(500).json({ error: 'Fehler beim Laden.', detail: err.message });
   }
 });
@@ -45,10 +54,15 @@ router.get('/liste', async (req, res) => {
   if (!baseUrl || !user) return res.status(500).json({ error: 'Nextcloud nicht konfiguriert.' });
 
   try {
-    const response = await fetch(`${baseUrl}/remote.php/dav/files/${user}/${pfad}/`, {
+    const url = `${baseUrl}/remote.php/dav/files/${user}/${encodePfad(pfad)}/`;
+    const response = await fetch(url, {
       method: 'PROPFIND',
       headers: { Authorization: `Basic ${credentials}`, Depth: '1', 'Content-Type': 'application/xml' },
     });
+
+    if (!response.ok) {
+      console.error('Nextcloud PROPFIND Fehler:', response.status, url);
+    }
 
     if (!response.ok) return res.status(response.status).json({ error: 'Ordner nicht gefunden.' });
 

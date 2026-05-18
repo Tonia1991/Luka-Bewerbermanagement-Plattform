@@ -16,10 +16,10 @@ export default function DokumentenAnzeige({ bewerber }) {
   useEffect(() => {
     if (!nextcloudOrdner) return;
     setDateien([]);
-    setLadeFehler(false);
+    setLadeFehler(null);
     axios.get(`/api/dokument/liste?pfad=${encodeURIComponent(nextcloudOrdner)}`)
       .then(r => setDateien(r.data.dateien || []))
-      .catch(() => setLadeFehler(true));
+      .catch(err => setLadeFehler(err.response?.data?.error || err.message || 'Unbekannter Fehler'));
   }, [nextcloudOrdner]);
 
   function pdfUrl(datei) {
@@ -38,7 +38,7 @@ export default function DokumentenAnzeige({ bewerber }) {
       {!nextcloudOrdner ? (
         <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Kein Nextcloud-Ordner verknüpft.</p>
       ) : ladeFehler ? (
-        <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Ordner nicht erreichbar.</p>
+        <p className="text-sm" style={{ color: '#dc2626' }}>Fehler: {ladeFehler}</p>
       ) : dateien.length === 0 ? (
         <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Keine Dateien im Ordner.</p>
       ) : (
