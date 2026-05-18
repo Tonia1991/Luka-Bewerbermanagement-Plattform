@@ -7,7 +7,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: tonia1991/biohacking-recruiting
+  IMAGE_NAME: tonia1991/hrrecruitingbiohackingclub
 
 jobs:
   build-and-push:
