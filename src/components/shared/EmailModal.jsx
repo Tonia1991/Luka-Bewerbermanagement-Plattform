@@ -72,9 +72,7 @@ export default function EmailModal({ bewerber, aktion, onClose, onSend }) {
       setBetreff(res.data.betreff); setText(res.data.text);
     } catch {
       setKiError('KI-Vorschlag nicht verfügbar.');
-      setTab('einladung');
-      setBetreff(aktion === 'einladen' ? VORLAGE_EINLADUNG_BETREFF() : VORLAGE_ABSAGE_BETREFF());
-      setText(aktion === 'einladen' ? VORLAGE_EINLADUNG_TEXT(vorname, nachname, stelle) : VORLAGE_ABSAGE_TEXT(vorname, nachname, stelle));
+      setTab(aktion === 'einladen' ? 'einladung' : 'absage');
     } finally { setKiLoading(false); }
   }
 
@@ -98,7 +96,14 @@ export default function EmailModal({ bewerber, aktion, onClose, onSend }) {
         {/* Tabs */}
         <div className="flex gap-1 px-6 py-3" style={{ borderBottom: '1px solid var(--border-l)', background: 'var(--light)' }}>
           {[{ key: 'ki', label: 'KI-Vorschlag' }, { key: 'einladung', label: 'Einladung' }, { key: 'absage', label: 'Absage' }].map(t => (
-            <button key={t.key} onClick={() => setTab(t.key)} style={tabStyle(tab === t.key)}>{t.label}</button>
+            <button
+              key={t.key}
+              onClick={() => {
+                setTab(t.key);
+                if (t.key === 'ki') ladeKIVorschlag();
+              }}
+              style={tabStyle(tab === t.key)}
+            >{t.label}</button>
           ))}
         </div>
 

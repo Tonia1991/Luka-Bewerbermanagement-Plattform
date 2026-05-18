@@ -20,7 +20,6 @@ export default function NotizenFeld({ bewerber, onNotizGespeichert }) {
     try {
       await axios.patch(`/api/notizen/${bewerber.Id}`, { notiz: wert });
       setStatus('saved');
-      onNotizGespeichert?.();
     } catch { setStatus('error'); }
   }
 
