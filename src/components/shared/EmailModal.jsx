@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
 
 const VORLAGE_EINLADUNG_BETREFF = () => `Einladung zum Gespräch – Biohacking Club Berlin`;
 const VORLAGE_EINLADUNG_TEXT = (vorname, nachname, stelle) => `Hey ${vorname},
@@ -42,39 +41,23 @@ const inputStyle = {
 };
 
 export default function EmailModal({ bewerber, aktion, onClose, onSend }) {
-  const [tab, setTab] = useState('ki');
-  const [betreff, setBetreff] = useState('');
+  const [tab, setTab] = useState(aktion === 'einladen' ? 'einladung' : 'absage');
+  const [betreff, setBetreff] = useState(aktion === 'einladen' ? VORLAGE_EINLADUNG_BETREFF() : VORLAGE_ABSAGE_BETREFF());
   const [text, setText] = useState('');
-  const [kiLoading, setKiLoading] = useState(false);
-  const [kiError, setKiError] = useState(null);
   const [sending, setSending] = useState(false);
 
   const vorname = bewerber?.Vorname || bewerber?.Name?.split(' ')[0] || '';
   const nachname = bewerber?.Nachname || bewerber?.Name?.split(' ').slice(1).join(' ') || '';
   const stelle = bewerber?.Stelle || '';
 
-  useEffect(() => { ladeKIVorschlag(); }, []);
+  useEffect(() => {
+    setText(aktion === 'einladen' ? VORLAGE_EINLADUNG_TEXT(vorname, nachname, stelle) : VORLAGE_ABSAGE_TEXT(vorname, nachname, stelle));
+  }, []);
 
   useEffect(() => {
     if (tab === 'einladung') { setBetreff(VORLAGE_EINLADUNG_BETREFF()); setText(VORLAGE_EINLADUNG_TEXT(vorname, nachname, stelle)); }
     else if (tab === 'absage') { setBetreff(VORLAGE_ABSAGE_BETREFF()); setText(VORLAGE_ABSAGE_TEXT(vorname, nachname, stelle)); }
   }, [tab]);
-
-  async function ladeKIVorschlag() {
-    setKiLoading(true); setKiError(null);
-    try {
-      const res = await axios.post('/api/email-vorschlag', {
-        aktion, vorname, nachname, stelle,
-        ki_zusammenfassung: bewerber?.KI_Zusammenfassung || '',
-        ki_staerken: bewerber?.KI_Staerken || '',
-        ki_schwaechen: bewerber?.KI_Schwaechen || '',
-      });
-      setBetreff(res.data.betreff); setText(res.data.text);
-    } catch {
-      setKiError('KI-Vorschlag nicht verfügbar.');
-      setTab(aktion === 'einladen' ? 'einladung' : 'absage');
-    } finally { setKiLoading(false); }
-  }
 
   async function handleSenden() {
     setSending(true);
@@ -95,26 +78,12 @@ export default function EmailModal({ bewerber, aktion, onClose, onSend }) {
 
         {/* Tabs */}
         <div className="flex gap-1 px-6 py-3" style={{ borderBottom: '1px solid var(--border-l)', background: 'var(--light)' }}>
-          {[{ key: 'ki', label: 'KI-Vorschlag' }, { key: 'einladung', label: 'Einladung' }, { key: 'absage', label: 'Absage' }].map(t => (
-            <button
-              key={t.key}
-              onClick={() => {
-                setTab(t.key);
-                if (t.key === 'ki') ladeKIVorschlag();
-              }}
-              style={tabStyle(tab === t.key)}
-            >{t.label}</button>
+          {[{ key: 'einladung', label: 'Einladung' }, { key: 'absage', label: 'Absage' }].map(t => (
+            <button key={t.key} onClick={() => setTab(t.key)} style={tabStyle(tab === t.key)}>{t.label}</button>
           ))}
         </div>
 
         <div className="px-6 py-4 space-y-3">
-          {tab === 'ki' && kiLoading && (
-            <div className="flex items-center gap-2 text-sm py-2" style={{ color: 'var(--text-muted)' }}>
-              <div className="animate-spin rounded-full h-4 w-4 border-b-2 flex-shrink-0" style={{ borderColor: 'var(--blue)' }}></div>
-              KI-Vorschlag wird generiert...
-            </div>
-          )}
-          {kiError && <p className="text-xs" style={{ color: '#dc2626' }}>{kiError}</p>}
 
           <div>
             <label className="block text-xs font-semibold mb-1.5" style={{ color: 'var(--text-sub)' }}>Betreff</label>
