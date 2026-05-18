@@ -37,51 +37,55 @@ export default function DokumentenAnzeige({ bewerber }) {
 
       {!nextcloudOrdner ? (
         <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Kein Nextcloud-Ordner verknüpft.</p>
-      ) : ladeFehler ? (
-        <p className="text-sm" style={{ color: '#dc2626' }}>Fehler: {ladeFehler}</p>
-      ) : dateien.length === 0 ? (
-        <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Keine Dateien im Ordner.</p>
       ) : (
         <>
-          <div className="space-y-1.5">
-            {dateien.map(datei => (
-              <div
-                key={datei}
-                className="flex items-center justify-between gap-2 px-3 py-2 rounded transition-all"
-                style={{
-                  border: `1px solid ${aktivePDF === datei ? 'rgba(74,140,200,0.3)' : 'var(--border-l)'}`,
-                  background: aktivePDF === datei ? 'rgba(74,140,200,0.04)' : 'var(--light)',
-                }}
-              >
-                <span className="text-sm" style={{ color: 'var(--text-d)' }}>{datei}</span>
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => setAktivePDF(aktivePDF === datei ? null : datei)}
-                    className="text-xs font-medium"
-                    style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--blue)' }}
-                  >
-                    {aktivePDF === datei ? 'Schließen' : 'Anzeigen'}
-                  </button>
-                  <a
-                    href={pdfUrl(datei)} target="_blank" rel="noopener noreferrer"
-                    className="text-xs font-medium"
-                    style={{ color: 'var(--text-muted)', textDecoration: 'none' }}
-                  >
-                    Download
-                  </a>
+          {ladeFehler && (
+            <p className="text-xs" style={{ color: '#dc2626' }}>Dateiliste nicht erreichbar: {ladeFehler}</p>
+          )}
+
+          {!ladeFehler && dateien.length === 0 && (
+            <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Keine Dateien im Ordner.</p>
+          )}
+
+          {dateien.length > 0 && (
+            <div className="space-y-1.5">
+              {dateien.map(datei => (
+                <div
+                  key={datei}
+                  className="flex items-center justify-between gap-2 px-3 py-2 rounded transition-all"
+                  style={{
+                    border: `1px solid ${aktivePDF === datei ? 'rgba(74,140,200,0.3)' : 'var(--border-l)'}`,
+                    background: aktivePDF === datei ? 'rgba(74,140,200,0.04)' : 'var(--light)',
+                  }}
+                >
+                  <span className="text-sm" style={{ color: 'var(--text-d)' }}>{datei}</span>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => setAktivePDF(aktivePDF === datei ? null : datei)}
+                      className="text-xs font-medium"
+                      style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--blue)' }}
+                    >
+                      {aktivePDF === datei ? 'Schließen' : 'Anzeigen'}
+                    </button>
+                    <a
+                      href={pdfUrl(datei)} target="_blank" rel="noopener noreferrer"
+                      className="text-xs font-medium"
+                      style={{ color: 'var(--text-muted)', textDecoration: 'none' }}
+                    >
+                      Download
+                    </a>
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
 
           {aktivePDF && (
-            <div className="space-y-2">
-              <iframe
-                src={pdfUrl(aktivePDF)} width="100%" height="600"
-                style={{ border: '1px solid var(--border-l)', borderRadius: 6, display: 'block' }}
-                title={aktivePDF}
-              />
-            </div>
+            <iframe
+              src={pdfUrl(aktivePDF)} width="100%" height="600"
+              style={{ border: '1px solid var(--border-l)', borderRadius: 6, display: 'block' }}
+              title={aktivePDF}
+            />
           )}
 
           {nextcloudBase && (
