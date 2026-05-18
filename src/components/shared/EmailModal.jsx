@@ -16,13 +16,13 @@ Dein Team vom Biohacking Club`;
 const VORLAGE_ABSAGE_BETREFF = () => `Deine Bewerbung beim Biohacking Club Berlin`;
 const VORLAGE_ABSAGE_TEXT = (vorname, nachname, stelle) => `Hey ${vorname},
 
-danke, dass du dir die Zeit genommen hast, dich als ${stelle} bei uns zu bewerben – das wissen wir wirklich zu schätzen.
+danke, dass du dir die Zeit genommen hast, dich als ${stelle} bei uns zu bewerben – das bedeutet uns wirklich viel.
 
-Nach sorgfältiger Prüfung deiner Unterlagen haben wir uns leider gegen eine Einladung zum Gespräch entschieden. Das war keine leichte Entscheidung, da wir viele tolle Bewerbungen erhalten haben.
+Wir haben viele starke Bewerbungen erhalten und die Entscheidung ist uns ehrlich gesagt nicht leicht gefallen. Am Ende waren es wirklich nur Nuancen – es gab Bewerberinnen und Bewerber, deren Profil in einzelnen Punkten noch etwas besser auf unsere aktuelle Situation gepasst hat.
 
-Wir wünschen dir alles Gute für deinen weiteren Weg und hoffen, dass du die richtige Stelle findest!
+Das sagt nichts über dich als Person aus, und wir wünschen dir von Herzen alles Gute für deinen weiteren Weg!
 
-Das Team vom Biohacking Club Berlin
+Dein Team vom Biohacking Club
 
 ---
 Datenschutzhinweis: Deine Bewerbungsunterlagen werden gemäß DSGVO innerhalb von 30 Tagen nach dieser Mitteilung vollständig gelöscht.`;
