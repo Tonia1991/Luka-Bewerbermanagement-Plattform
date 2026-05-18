@@ -100,6 +100,36 @@ app.get('/api/config', requireAuth, (req, res) => {
   res.json({ nextcloudBaseUrl: process.env.NEXTCLOUD_BASE_URL || '' });
 });
 
+app.get('/api/nextcloud-debug', requireAuth, async (req, res) => {
+  const baseUrl = process.env.NEXTCLOUD_BASE_URL;
+  const user = process.env.NEXTCLOUD_USER;
+  const password = process.env.NEXTCLOUD_PASSWORD;
+
+  const config = {
+    baseUrl: baseUrl || '(nicht gesetzt)',
+    user: user || '(nicht gesetzt)',
+    passwordSet: !!password,
+    passwordLength: password?.length || 0,
+  };
+
+  if (!baseUrl || !user || !password) {
+    return res.json({ config, error: 'Env-Variablen fehlen' });
+  }
+
+  try {
+    const { default: fetch } = await import('node-fetch');
+    const credentials = Buffer.from(`${user}:${password}`).toString('base64');
+    const testUrl = `${baseUrl}/remote.php/dav/files/${user}/`;
+    const response = await fetch(testUrl, {
+      method: 'PROPFIND',
+      headers: { Authorization: `Basic ${credentials}`, Depth: '0' },
+    });
+    res.json({ config, status: response.status, ok: response.ok, testUrl });
+  } catch (err) {
+    res.json({ config, error: err.message });
+  }
+});
+
 app.use('/api/bewerbungen', requireAuth, bewerbungenRouter);
 app.use('/api/entscheidung', requireAuth, entscheidungRouter);
 app.use('/api/email-vorschlag', requireAuth, emailRouter);
