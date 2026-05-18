@@ -25,7 +25,12 @@ router.post('/', validateEntscheidung, async (req, res) => {
     const webhookResponse = await axios.post(
       webhookUrl,
       { nocodb_id, aktion, email_betreff, email_text },
-      { timeout: 30000 }
+      {
+        timeout: 30000,
+        headers: process.env.N8N_WEBHOOK_SECRET
+          ? { Authorization: `Bearer ${process.env.N8N_WEBHOOK_SECRET}` }
+          : {},
+      }
     );
     res.json({ success: true, data: webhookResponse.data });
   } catch (err) {
@@ -48,7 +53,12 @@ router.post('/massen', async (req, res) => {
       await axios.post(
         process.env.N8N_WEBHOOK_ENTSCHEIDUNG,
         { nocodb_id: id, aktion: 'absagen', email_betreff, email_text },
-        { timeout: 30000 }
+        {
+          timeout: 30000,
+          headers: process.env.N8N_WEBHOOK_SECRET
+            ? { Authorization: `Bearer ${process.env.N8N_WEBHOOK_SECRET}` }
+            : {},
+        }
       );
       ergebnisse.push({ id, success: true });
     } catch (err) {
