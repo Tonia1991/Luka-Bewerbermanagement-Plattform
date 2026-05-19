@@ -27,8 +27,6 @@ export default function StatistikLeiste({ stats }) {
       </div>
       <div className="flex items-center gap-3 text-xs px-1" style={{ color: 'var(--text-muted)' }}>
         <span className="live-dot"></span>
-        <span>Ø KI-Note: <strong style={{ color: 'var(--text-d)' }}>{stats.avgNote || '–'}</strong></span>
-        <span style={{ color: 'var(--border-l)' }}>|</span>
         <span>Diese Woche: <strong style={{ color: 'var(--text-d)' }}>{stats.dieseWoche}</strong> neue Bewerbungen</span>
       </div>
     </div>

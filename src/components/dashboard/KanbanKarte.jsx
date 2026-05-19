@@ -66,12 +66,13 @@ export default function KanbanKarte({ bewerber, auswahlModus, ausgewaehlt, onTog
     >
       {/* Frist-Countdown */}
       {istOffen && verbleibend !== null && (
-        <div className="flex items-center gap-1 text-xs font-medium mb-2" style={{
+        <div className="flex items-center gap-1 font-medium mb-2" style={{
+          fontSize: 11,
           color: istKritisch ? '#dc2626' : verbleibend <= 3 ? '#ea580c' : verbleibend <= 7 ? '#ca8a04' : 'var(--text-muted)'
         }}>
           {istKritisch
             ? `⚠ Frist abgelaufen (${Math.abs(verbleibend)} Tage)`
-            : `⏱ Noch ${verbleibend} ${verbleibend === 1 ? 'Tag' : 'Tage'}`}
+            : `Noch ${verbleibend} ${verbleibend === 1 ? 'Tag' : 'Tage'} bis zur Rückmeldung`}
         </div>
       )}
 

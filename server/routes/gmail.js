@@ -3,6 +3,22 @@ import { ImapFlow } from 'imapflow';
 
 const router = Router();
 
+function decodeQuotedPrintable(str) {
+  str = str.replace(/=\r?\n/g, '');
+  const bytes = [];
+  let i = 0;
+  while (i < str.length) {
+    if (str[i] === '=' && i + 2 < str.length && /[0-9A-Fa-f]{2}/.test(str.substr(i + 1, 2))) {
+      bytes.push(parseInt(str.substr(i + 1, 2), 16));
+      i += 3;
+    } else {
+      bytes.push(str.charCodeAt(i));
+      i++;
+    }
+  }
+  return Buffer.from(bytes).toString('utf-8');
+}
+
 function gmailClient() {
   return new ImapFlow({
     host: 'imap.gmail.com',
@@ -47,7 +63,7 @@ router.get('/', async (req, res) => {
         const raw = part1 || partText;
         if (raw) {
           body = raw.toString('utf-8').trim();
-          // HTML-Tags entfernen falls vorhanden
+          body = decodeQuotedPrintable(body);
           body = body.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').replace(/\r\n/g, '\n').trim();
         }
 
