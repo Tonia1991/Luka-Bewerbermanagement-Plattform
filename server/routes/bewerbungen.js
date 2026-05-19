@@ -8,6 +8,14 @@ function nocoHeaders() {
   return { 'xc-token': process.env.NOCODB_API_TOKEN };
 }
 
+function normalizeBewerber(b) {
+  if (!b) return b;
+  const r = { ...b };
+  if ('E-Mail' in r) { r.Email = r['E-Mail']; delete r['E-Mail']; }
+  if ('Verfuegbar_ab' in r) { r.Verfuegbarkeit = r['Verfuegbar_ab']; delete r['Verfuegbar_ab']; }
+  return r;
+}
+
 function buildWhereClause(query) {
   const conditions = [];
 
@@ -78,7 +86,7 @@ router.get('/', async (req, res) => {
       { headers: nocoHeaders(), params }
     );
 
-    res.json(response.data?.list || []);
+    res.json((response.data?.list || []).map(normalizeBewerber));
   } catch (err) {
     console.error('NocoDB Fehler:', err.message, err.response?.data);
     res.status(500).json({ error: 'Fehler beim Laden der Bewerbungen.', detail: err.message, nocodb: err.response?.data });
@@ -91,7 +99,7 @@ router.get('/:id', async (req, res) => {
       `${process.env.NOCODB_API_URL}/api/v2/tables/${TABLE_ID}/records/${req.params.id}`,
       { headers: nocoHeaders() }
     );
-    res.json(response.data);
+    res.json(normalizeBewerber(response.data));
   } catch (err) {
     res.status(500).json({ error: 'Fehler beim Laden der Bewerbung.', detail: err.message });
   }
