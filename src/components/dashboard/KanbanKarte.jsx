@@ -6,6 +6,11 @@ function tageAlt(datum) {
   return Math.floor((Date.now() - new Date(datum)) / (1000 * 60 * 60 * 24));
 }
 
+function tageVerbleibend(datum) {
+  if (!datum) return null;
+  return 14 - tageAlt(datum);
+}
+
 function formatDatum(datum) {
   if (!datum) return '–';
   return new Date(datum).toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' });
@@ -26,7 +31,10 @@ const EMPFEHLUNG_CONFIG = {
 export default function KanbanKarte({ bewerber, auswahlModus, ausgewaehlt, onToggle }) {
   const navigate = useNavigate();
   const alter = tageAlt(bewerber.Eingangsdatum);
-  const istWarnend = alter > 7 && bewerber.Status !== 'eingeladen' && bewerber.Status !== 'abgesagt';
+  const verbleibend = tageVerbleibend(bewerber.Eingangsdatum);
+  const istOffen = bewerber.Status !== 'eingeladen' && bewerber.Status !== 'abgesagt';
+  const istWarnend = istOffen && verbleibend !== null && verbleibend <= 3;
+  const istKritisch = istOffen && verbleibend !== null && verbleibend <= 0;
   const kiEmpfehlung = bewerber.KI_Empfehlung || (bewerber.KI_Bewertung_Volltext?.split('\n')[0]?.trim());
   const empfehlung = EMPFEHLUNG_CONFIG[kiEmpfehlung];
 
@@ -49,10 +57,14 @@ export default function KanbanKarte({ bewerber, auswahlModus, ausgewaehlt, onTog
       onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 2px 8px rgba(15,30,58,0.08)'; e.currentTarget.style.borderColor = 'rgba(74,140,200,0.25)'; }}
       onMouseLeave={e => { e.currentTarget.style.boxShadow = ''; e.currentTarget.style.borderColor = istWarnend ? 'rgba(239,68,68,0.35)' : ausgewaehlt ? 'rgba(74,140,200,0.35)' : 'var(--border-l)'; }}
     >
-      {/* Warn */}
-      {istWarnend && (
-        <div className="flex items-center gap-1 text-xs font-medium mb-2" style={{ color: '#dc2626' }}>
-          ! Wartet seit {alter} Tagen
+      {/* Frist-Countdown */}
+      {istOffen && verbleibend !== null && (
+        <div className="flex items-center gap-1 text-xs font-medium mb-2" style={{
+          color: istKritisch ? '#dc2626' : verbleibend <= 3 ? '#ea580c' : verbleibend <= 7 ? '#ca8a04' : 'var(--text-muted)'
+        }}>
+          {istKritisch
+            ? `⚠ Frist abgelaufen (${Math.abs(verbleibend)} Tage)`
+            : `⏱ ${verbleibend} ${verbleibend === 1 ? 'Tag' : 'Tage'} verbleibend`}
         </div>
       )}
 

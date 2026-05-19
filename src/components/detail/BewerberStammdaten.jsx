@@ -5,16 +5,29 @@ function tageAlt(datum) {
   return Math.floor((Date.now() - new Date(datum)) / (1000 * 60 * 60 * 24));
 }
 
+function tageVerbleibend(datum) {
+  if (!datum) return null;
+  return 14 - tageAlt(datum);
+}
+
 export default function BewerberStammdaten({ bewerber }) {
   const alter = tageAlt(bewerber.Eingangsdatum);
-  const istWarnend = alter > 7 && bewerber.Status !== 'eingeladen' && bewerber.Status !== 'abgesagt';
+  const verbleibend = tageVerbleibend(bewerber.Eingangsdatum);
+  const istOffen = bewerber.Status !== 'eingeladen' && bewerber.Status !== 'abgesagt';
+  const istWarnend = istOffen && alter > 7;
 
   return (
     <div className="space-y-3">
-      {/* Warn-Box */}
-      {istWarnend && (
-        <div className="flex items-center gap-2 px-4 py-3 rounded text-sm" style={{ background: 'rgba(239,68,68,0.05)', border: '1px solid rgba(239,68,68,0.18)', color: '#dc2626' }}>
-          Diese Bewerbung wartet seit <strong>{alter} Tagen</strong> auf eine Entscheidung.
+      {/* Frist-Box */}
+      {istOffen && verbleibend !== null && (
+        <div className="flex items-center gap-2 px-4 py-3 rounded text-sm" style={{
+          background: verbleibend <= 0 ? 'rgba(239,68,68,0.05)' : verbleibend <= 3 ? 'rgba(234,88,12,0.05)' : 'rgba(202,138,4,0.05)',
+          border: `1px solid ${verbleibend <= 0 ? 'rgba(239,68,68,0.18)' : verbleibend <= 3 ? 'rgba(234,88,12,0.18)' : 'rgba(202,138,4,0.18)'}`,
+          color: verbleibend <= 0 ? '#dc2626' : verbleibend <= 3 ? '#ea580c' : '#ca8a04',
+        }}>
+          {verbleibend <= 0
+            ? <>⚠ Frist abgelaufen — Bewerbung wartet seit <strong>{alter} Tagen</strong> auf eine Entscheidung.</>
+            : <>⏱ Noch <strong>{verbleibend} {verbleibend === 1 ? 'Tag' : 'Tage'}</strong> bis zur 14-Tage-Frist.</>}
         </div>
       )}
 
