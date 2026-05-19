@@ -26,7 +26,12 @@ router.get('/', async (req, res) => {
   const client = gmailClient();
   try {
     await client.connect();
-    await client.mailboxOpen('[Gmail]/All Mail');
+    // Deutschen und englischen Ordnernamen probieren
+    try {
+      await client.mailboxOpen('[Gmail]/Alle Nachrichten');
+    } catch {
+      await client.mailboxOpen('[Gmail]/All Mail');
+    }
 
     const uids = await client.search({ or: [{ from: email }, { to: email }] }, { uid: true });
 
