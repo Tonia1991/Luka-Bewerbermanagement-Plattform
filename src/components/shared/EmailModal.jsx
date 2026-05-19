@@ -25,7 +25,7 @@ Das sagt nichts über dich als Person aus, und wir wünschen dir von Herzen alle
 Dein Team vom Biohacking Club
 
 ---
-Datenschutzhinweis: Deine Bewerbungsunterlagen werden gemäß DSGVO innerhalb von 30 Tagen nach dieser Mitteilung vollständig gelöscht.`;
+Datenschutzhinweis: Deine Bewerbungsunterlagen werden gemäß DSGVO 6 Monate nach Abschluss des Bewerbungsverfahrens gelöscht.`;
 
 const tabStyle = (aktiv) => ({
   padding: '5px 12px', borderRadius: 4, fontSize: 13, fontWeight: 500,
