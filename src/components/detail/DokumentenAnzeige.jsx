@@ -106,10 +106,10 @@ export default function DokumentenAnzeige({ bewerber }) {
                   >×</button>
                 </div>
               </div>
-              <div className="flex-1" onClick={e => e.stopPropagation()}>
+              <div className="flex-1" style={{ minHeight: 0 }} onClick={e => e.stopPropagation()}>
                 <iframe
-                  src={pdfUrl(aktivePDF)} width="100%" height="100%"
-                  style={{ border: 'none', display: 'block' }}
+                  src={pdfUrl(aktivePDF)} width="100%"
+                  style={{ border: 'none', display: 'block', height: '100%' }}
                   title={aktivePDF}
                 />
               </div>
