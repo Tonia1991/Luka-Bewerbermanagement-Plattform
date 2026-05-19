@@ -38,8 +38,19 @@ router.get('/', async (req, res) => {
     const messages = [];
     if (uids.length > 0) {
       const limited = uids.slice(-50);
-      for await (const msg of client.fetch(limited, { envelope: true }, { uid: true })) {
+      for await (const msg of client.fetch(limited, { envelope: true, bodyParts: ['1', 'TEXT'] }, { uid: true })) {
         if (!msg.envelope) continue;
+
+        let body = '';
+        const part1 = msg.bodyParts?.get('1');
+        const partText = msg.bodyParts?.get('text');
+        const raw = part1 || partText;
+        if (raw) {
+          body = raw.toString('utf-8').trim();
+          // HTML-Tags entfernen falls vorhanden
+          body = body.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').replace(/\r\n/g, '\n').trim();
+        }
+
         messages.push({
           uid: msg.uid,
           datum: msg.envelope.date,
@@ -47,6 +58,7 @@ router.get('/', async (req, res) => {
           von: msg.envelope.from?.[0]?.address || '',
           an: msg.envelope.to?.map(t => t.address).join(', ') || '',
           richtung: msg.envelope.from?.[0]?.address?.toLowerCase() === process.env.GMAIL_USER?.toLowerCase() ? 'ausgehend' : 'eingehend',
+          body,
         });
       }
     }
