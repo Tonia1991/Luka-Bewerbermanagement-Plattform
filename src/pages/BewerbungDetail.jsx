@@ -73,7 +73,7 @@ export default function BewerbungDetail() {
               <BewerberStammdaten bewerber={bewerber} />
               <KIBewertung bewerber={bewerber} />
               <NotizenFeld bewerber={bewerber} onNotizGespeichert={ladeBewerbung} />
-              <EmailVerlauf bewerber={bewerber} />
+              {/* <EmailVerlauf bewerber={bewerber} /> */}
             </div>
 
             {/* Rechte Spalte */}
