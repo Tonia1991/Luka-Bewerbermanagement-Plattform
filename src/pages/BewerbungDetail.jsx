@@ -72,7 +72,6 @@ export default function BewerbungDetail() {
             <div className="space-y-4 min-w-0">
               <BewerberStammdaten bewerber={bewerber} />
               <KIBewertung bewerber={bewerber} />
-              <NotizenFeld bewerber={bewerber} onNotizGespeichert={ladeBewerbung} />
               <EmailVerlauf bewerber={bewerber} />
             </div>
 
@@ -80,6 +79,7 @@ export default function BewerbungDetail() {
             <div className="space-y-4">
               <DokumentenAnzeige bewerber={bewerber} />
               <AktionsBereich bewerber={bewerber} onAktualisieren={ladeBewerbung} />
+              <NotizenFeld bewerber={bewerber} onNotizGespeichert={ladeBewerbung} />
             </div>
           </div>
         </main>
