@@ -16,6 +16,13 @@ function formatDatum(datum) {
   return new Date(datum).toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' });
 }
 
+function formatDatumKurz(wert) {
+  if (!wert) return null;
+  const d = new Date(wert);
+  if (!isNaN(d.getTime())) return d.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' });
+  return wert;
+}
+
 function formatGehalt(gehalt) {
   if (!gehalt) return null;
   const zahl = parseFloat(String(gehalt).replace(/[^0-9.]/g, ''));
@@ -64,7 +71,7 @@ export default function KanbanKarte({ bewerber, auswahlModus, ausgewaehlt, onTog
         }}>
           {istKritisch
             ? `⚠ Frist abgelaufen (${Math.abs(verbleibend)} Tage)`
-            : `⏱ ${verbleibend} ${verbleibend === 1 ? 'Tag' : 'Tage'} verbleibend für Rückmeldung`}
+            : `⏱ Noch ${verbleibend} ${verbleibend === 1 ? 'Tag' : 'Tage'}`}
         </div>
       )}
 
@@ -89,9 +96,9 @@ export default function KanbanKarte({ bewerber, auswahlModus, ausgewaehlt, onTog
 
       {/* Meta */}
       <div className="space-y-0.5 text-xs" style={{ color: 'var(--text-muted)' }}>
-        <div>{formatDatum(bewerber.Eingangsdatum)}</div>
+        <div>Bewerbungseingang: {formatDatum(bewerber.Eingangsdatum)}</div>
         {bewerber.Gehaltsvorstellung && <div>Gehalt: {formatGehalt(bewerber.Gehaltsvorstellung)}</div>}
-        {bewerber.Verfuegbarkeit && <div>Verfügbar ab: {bewerber.Verfuegbarkeit}</div>}
+        {bewerber.Verfuegbarkeit && <div>Verfügbar ab: {formatDatumKurz(bewerber.Verfuegbarkeit)}</div>}
       </div>
 
       {/* Auswahl */}
