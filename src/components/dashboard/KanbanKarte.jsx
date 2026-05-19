@@ -72,7 +72,7 @@ export default function KanbanKarte({ bewerber, auswahlModus, ausgewaehlt, onTog
         }}>
           {istKritisch
             ? `⚠ Frist abgelaufen (${Math.abs(verbleibend)} Tage)`
-            : `Noch ${verbleibend} ${verbleibend === 1 ? 'Tag' : 'Tage'} bis zur Rückmeldung`}
+            : `Noch ${verbleibend} ${verbleibend === 1 ? 'Tag' : 'Tage'} bis zur Rückmeldungsfrist`}
         </div>
       )}
 

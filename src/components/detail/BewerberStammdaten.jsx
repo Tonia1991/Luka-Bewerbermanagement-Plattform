@@ -27,7 +27,7 @@ export default function BewerberStammdaten({ bewerber }) {
         }}>
           {verbleibend <= 0
             ? <>⚠ Frist abgelaufen — Bewerbung wartet seit <strong>{alter} Tagen</strong> auf eine Entscheidung.</>
-            : <>⏱ Noch <strong>{verbleibend} {verbleibend === 1 ? 'Tag' : 'Tage'}</strong> bis zur 14-Tage-Frist.</>}
+            : <>Noch <strong>{verbleibend} {verbleibend === 1 ? 'Tag' : 'Tage'}</strong> bis zur Rückmeldungsfrist.</>}
         </div>
       )}
 
