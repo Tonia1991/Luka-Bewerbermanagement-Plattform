@@ -81,11 +81,39 @@ export default function DokumentenAnzeige({ bewerber }) {
           )}
 
           {aktivePDF && (
-            <iframe
-              src={pdfUrl(aktivePDF)} width="100%" height="600"
-              style={{ border: '1px solid var(--border-l)', borderRadius: 6, display: 'block' }}
-              title={aktivePDF}
-            />
+            <div
+              className="fixed inset-0 z-50 flex flex-col"
+              style={{ background: 'rgba(10,20,40,0.85)' }}
+              onClick={() => setAktivePDF(null)}
+            >
+              <div
+                className="flex items-center justify-between px-5 py-3"
+                style={{ background: 'var(--dark)', borderBottom: '1px solid rgba(255,255,255,0.1)' }}
+                onClick={e => e.stopPropagation()}
+              >
+                <span className="text-sm font-medium" style={{ color: '#fff' }}>{aktivePDF}</span>
+                <div className="flex items-center gap-3">
+                  <a
+                    href={pdfUrl(aktivePDF)} target="_blank" rel="noopener noreferrer"
+                    className="text-xs font-medium"
+                    style={{ color: 'rgba(255,255,255,0.6)', textDecoration: 'none' }}
+                  >
+                    Download
+                  </a>
+                  <button
+                    onClick={() => setAktivePDF(null)}
+                    style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#fff', fontSize: 20, lineHeight: 1, padding: '2px 6px' }}
+                  >×</button>
+                </div>
+              </div>
+              <div className="flex-1" onClick={e => e.stopPropagation()}>
+                <iframe
+                  src={pdfUrl(aktivePDF)} width="100%" height="100%"
+                  style={{ border: 'none', display: 'block' }}
+                  title={aktivePDF}
+                />
+              </div>
+            </div>
           )}
 
           {nextcloudBase && (
