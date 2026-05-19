@@ -55,12 +55,16 @@ export default function BewerberStammdaten({ bewerber }) {
           <div>
             <p className="text-xs font-semibold mb-0.5" style={{ color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', fontSize: 9 }}>Gehalt</p>
             <span style={{ color: 'var(--text-sub)' }}>
-              {bewerber.Gehaltsvorstellung ? `${parseFloat(bewerber.Gehaltsvorstellung).toLocaleString('de-DE')} €/Monat` : '–'}
+              {bewerber.Gehaltsvorstellung ? `${parseFloat(bewerber.Gehaltsvorstellung).toLocaleString('de-DE')} €/Jahr` : '–'}
             </span>
           </div>
           <div>
             <p className="text-xs font-semibold mb-0.5" style={{ color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', fontSize: 9 }}>Verfügbar ab</p>
-            <span style={{ color: 'var(--text-sub)' }}>{bewerber.Verfuegbarkeit || '–'}</span>
+            <span style={{ color: 'var(--text-sub)' }}>
+              {bewerber.Verfuegbarkeit
+                ? (() => { const d = new Date(bewerber.Verfuegbarkeit); return isNaN(d) ? bewerber.Verfuegbarkeit : d.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' }); })()
+                : '–'}
+            </span>
           </div>
           {bewerber.Quelle && (
             <div>
