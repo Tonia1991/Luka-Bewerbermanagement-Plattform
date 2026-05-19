@@ -14,6 +14,7 @@ import entscheidungRouter from './routes/entscheidung.js';
 import emailRouter from './routes/email.js';
 import notizenRouter from './routes/notizen.js';
 import nextcloudRouter from './routes/nextcloud.js';
+import gmailRouter from './routes/gmail.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
@@ -135,6 +136,7 @@ app.use('/api/entscheidung', requireAuth, entscheidungRouter);
 app.use('/api/email-vorschlag', requireAuth, emailRouter);
 app.use('/api/notizen', requireAuth, notizenRouter);
 app.use('/api/dokument', requireAuth, nextcloudRouter);
+app.use('/api/emails', requireAuth, gmailRouter);
 
 const distPath = path.join(__dirname, '..', 'dist');
 app.use(express.static(distPath));
