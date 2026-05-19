@@ -11,7 +11,7 @@ function nocoHeaders() {
 
 router.patch('/:id', [
   param('id').isNumeric().withMessage('Ungültige ID.'),
-  body('notiz').isString().trim().isLength({ max: 5000 }).withMessage('Notiz zu lang.'),
+  body('notiz').isString().isLength({ max: 50000 }).withMessage('Notiz zu lang.'),
 ], async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
