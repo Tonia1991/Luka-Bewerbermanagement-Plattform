@@ -3,7 +3,7 @@ import KanbanKarte from './KanbanKarte.jsx';
 const SPALTEN = [
   { status: 'offen',      label: 'Offen',      headerBg: 'rgba(74,140,200,0.05)',   headerBorder: 'rgba(74,140,200,0.12)' },
   { status: 'eingeladen', label: 'Eingeladen', headerBg: 'rgba(22,163,74,0.05)',    headerBorder: 'rgba(22,163,74,0.12)' },
-  { status: 'abgesagt',   label: 'Abgesagt',   headerBg: 'rgba(107,114,128,0.05)', headerBorder: 'rgba(107,114,128,0.12)' },
+  { status: 'abgesagt',   label: 'Abgesagt',   headerBg: 'rgba(220,38,38,0.05)',   headerBorder: 'rgba(220,38,38,0.12)' },
 ];
 
 export default function KanbanBoard({ bewerbungen, auswahlModus, ausgewaehlte, onToggle }) {
