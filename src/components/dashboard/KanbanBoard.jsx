@@ -1,9 +1,9 @@
 import KanbanKarte from './KanbanKarte.jsx';
 
 const SPALTEN = [
-  { status: 'offen',      label: 'Offen',      headerBg: 'rgba(74,140,200,0.05)',   headerBorder: 'rgba(74,140,200,0.12)' },
-  { status: 'eingeladen', label: 'Eingeladen', headerBg: 'rgba(22,163,74,0.05)',    headerBorder: 'rgba(22,163,74,0.12)' },
-  { status: 'abgesagt',   label: 'Abgesagt',   headerBg: 'rgba(220,38,38,0.05)',   headerBorder: 'rgba(220,38,38,0.12)' },
+  { status: 'offen',      label: 'Offen',      headerBg: 'rgba(74,140,200,0.05)',  headerBorder: 'rgba(74,140,200,0.12)',  badgeBg: 'rgba(74,140,200,0.1)',  badgeColor: 'var(--blue)' },
+  { status: 'eingeladen', label: 'Eingeladen', headerBg: 'rgba(22,163,74,0.05)',   headerBorder: 'rgba(22,163,74,0.12)',   badgeBg: 'rgba(22,163,74,0.1)',   badgeColor: '#16a34a' },
+  { status: 'abgesagt',   label: 'Abgesagt',   headerBg: 'rgba(220,38,38,0.05)',   headerBorder: 'rgba(220,38,38,0.12)',   badgeBg: 'rgba(220,38,38,0.1)',   badgeColor: '#dc2626' },
 ];
 
 export default function KanbanBoard({ bewerbungen, auswahlModus, ausgewaehlte, onToggle }) {
@@ -35,7 +35,7 @@ export default function KanbanBoard({ bewerbungen, auswahlModus, ausgewaehlte, o
                 </span>
                 <span
                   className="text-xs font-bold px-2 py-0.5 rounded"
-                  style={{ background: 'rgba(255,255,255,0.8)', color: 'var(--text-muted)', border: '1px solid var(--border-l)' }}
+                  style={{ background: spalte.badgeBg, color: spalte.badgeColor, border: `1px solid ${spalte.headerBorder}` }}
                 >
                   {karten.length}
                 </span>
