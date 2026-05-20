@@ -3,9 +3,9 @@ import { useState, useEffect } from 'react';
 const VORLAGE_EINLADUNG_BETREFF = () => `Einladung zum Gespräch – Biohacking Club`;
 const VORLAGE_EINLADUNG_TEXT = (vorname, nachname, stelle) => `Hallo ${vorname},
 
-danke für deine Bewerbung als ${stelle} bei uns im Biohacking Club – wir haben uns deine Unterlagen genau angeschaut und sind begeistert!
+danke für deine Bewerbung als ${stelle} bei uns im Biohacking Club – wir haben uns deine Unterlagen sorgfältig angeschaut und möchten dich gerne persönlich kennenlernen.
 
-Wir würden dich gerne persönlich kennenlernen und laden dich herzlich zu einem ersten Gespräch ein. Such dir gerne direkt einen passenden Termin aus:
+Such dir direkt einen passenden Termin für ein erstes Gespräch aus:
 
 https://calcom.antoniabutze.de/calender
 
@@ -16,11 +16,11 @@ Dein Team vom Biohacking Club`;
 const VORLAGE_ABSAGE_BETREFF = () => `Deine Bewerbung beim Biohacking Club`;
 const VORLAGE_ABSAGE_TEXT = (vorname, nachname, stelle) => `Hallo ${vorname},
 
-danke, dass du dir die Zeit genommen hast, dich als ${stelle} bei uns zu bewerben – das bedeutet uns wirklich viel.
+vielen Dank für deine Bewerbung als ${stelle} bei uns im Biohacking Club.
 
-Wir haben viele starke Bewerbungen erhalten und die Entscheidung ist uns ehrlich gesagt nicht leicht gefallen. Am Ende waren es wirklich nur Nuancen – es gab Bewerberinnen und Bewerber, deren Profil in einzelnen Punkten noch etwas besser auf unsere aktuelle Situation gepasst hat.
+Wir haben viele starke Bewerbungen erhalten und die Entscheidung ist uns nicht leicht gefallen. Am Ende haben wir uns für Kandidatinnen und Kandidaten entschieden, deren Profil in einigen Punkten noch etwas besser zur aktuellen Position gepasst hat. Diese Entscheidung ist kein Urteil über deine Fähigkeiten oder dein Potenzial.
 
-Das sagt nichts über dich als Person aus, und wir wünschen dir von Herzen alles Gute für deinen weiteren Weg!
+Wir wünschen dir für deinen weiteren Weg alles Gute und viel Erfolg!
 
 Dein Team vom Biohacking Club
 
